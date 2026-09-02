@@ -1,0 +1,555 @@
+const tickets = [
+    // ==========================================
+    // FASE 0: PREPARACIÓN DEL DATA CENTER (SANDBOX FÍSICO)
+    // ==========================================
+    {
+        id: '0.1',
+        tier: 'FASE 0: INGENIERÍA FÍSICA',
+        title: 'Montaje de Hardware',
+        desc: '<b>Objetivo:</b> Instalar el hardware base.<br><br><b>¿Por qué lo hacemos?:</b> Un centro de datos requiere un Rack (armario metálico) para organizar y ventilar el equipamiento.<br><b>Instrucción:</b> Arrastra un Switch y un Gateway desde el menú inferior y colócalos en los rieles del Rack.',
+        theory: '<b>Fase 0.1: El mundo tangible (<span class="concept" data-term="capa1">Capa 1 OSI</span>)</b><br><br>Antes de programar nada, el hardware debe existir físicamente.<br><br><b>¿Qué es un <span class="concept" data-term="rack">Rack</span>?</b><br>Imagina una enorme estantería metálica de 19 pulgadas de ancho. Los equipos de red no se dejan tirados en el piso ni en un escritorio; se "atornillan" uno encima del otro en este armario. Su altura se mide en "Unidades de Rack" (U). Un equipo normal mide 1U (4.4 cm de alto).<br><br><b>Tus primeros equipos:</b><br>• <b>Switch:</b> Es la "zapatilla múltiple" pero de datos. Permite enchufar 24 o 48 computadoras juntas para que armen una <span class="concept" data-term="lan">LAN</span>.<br>• <b>Gateway / Router:</b> Es el "Cartero" de la escuela. Él sabe cómo sacar los mensajes del Switch hacia la calle (Internet / <span class="concept" data-term="wan">WAN</span>).<br>• <b>Firewall:</b> El guardia de seguridad. Revisa las mochilas (paquetes) de todos los que entran y salen del edificio.',
+        tasks: [ { id: 't1', text: 'Montar un Switch y un Gateway en el Rack', done: false } ],
+        check: function() {
+            let sw = false, gw = false;
+            document.querySelectorAll('.placed-item').forEach(el => {
+                const label = el.querySelector('.hw-label') ? el.querySelector('.hw-label').innerText.toUpperCase() : '';
+                if (label.includes('SWITCH')) sw = true;
+                if (label.includes('GATEWAY') || label.includes('ROUTER') || label.includes('FIREWALL')) gw = true;
+            });
+            if(sw && gw) { this.tasks[0].done = true; return true; }
+            return false;
+        }
+    },
+    {
+        id: '0.2',
+        tier: 'FASE 0: INGENIERÍA FÍSICA',
+        title: 'Energización (Capa 1 OSI)',
+        desc: '<b>Objetivo:</b> Dar energía (Tensión).<br><br><b>¿Por qué lo hacemos?:</b> Las placas base no arrancan sin corriente eléctrica (Capa Física 1).<br><b>Instrucción:</b> Selecciona el cable Negro (Poder). Haz clic en el puerto PWR del Switch y conéctalo a la PDU (zapatilla eléctrica). Repite con el Gateway.',
+        theory: '<b>Fase 0.2: Electricidad (La sangre de la <span class="concept" data-term="capa1">Capa 1</span>)</b><br><br>Sin electrones, tu red es solo chatarra cara. En la Capa Física (Capa 1 del modelo OSI) lidiamos con el voltaje, los enchufes y la corriente.<br><br><b>¿Qué es una PDU?</b><br>PDU significa "Unidad de Distribución de Energía". Es, literalmente, una súper zapatilla eléctrica industrial atornillada al Rack.<br><br><b>¿Por qué importa?</b><br>En un Centro de Datos real, si se corta la luz, la empresa pierde millones. Por eso, los equipos profesionales (como servidores y switches grandes) tienen <b>DOS cables de poder</b> conectados a dos PDUs diferentes. Así, si una zapatilla se quema, el equipo sigue vivo alimentándose de la otra.',
+        tasks: [ { id: 't1', text: 'Encender Switch y Gateway (Luces Verdes)', done: false } ],
+        check: function() {
+            let sw = false, gw = false;
+            document.querySelectorAll('.placed-item.powered-on').forEach(el => {
+                const label = el.querySelector('.hw-label') ? el.querySelector('.hw-label').innerText.toUpperCase() : '';
+                if (label.includes('SWITCH')) sw = true;
+                if (label.includes('GATEWAY') || label.includes('ROUTER') || label.includes('FIREWALL')) gw = true;
+            });
+            if(sw && gw) { this.tasks[0].done = true; return true; }
+            return false;
+        }
+    },
+    {
+        id: '0.3',
+        tier: 'FASE 0: INGENIERÍA FÍSICA',
+        title: 'Uplink de Red (Cableado UTP)',
+        desc: '<b>Objetivo:</b> Enlace físico de datos.<br><br><b>¿Por qué lo hacemos?:</b> Para que los electrones lleven los bits entre los equipos.<br><b>Instrucción:</b> Selecciona el cable Azul (UTP). Une un puerto de datos del Switch con uno del Gateway.',
+        theory: '<b>Fase 0.3: El sistema nervioso (<span class="concept" data-term="utp">Cables UTP</span>)</b><br><br>Ahora que tienen corriente, hay que unirlos para que hablen.<br><br><b>¿Qué es el cable UTP?</b><br>Ese cable azul, naranja o gris que usas para el internet. Adentro no tiene 1, sino <b>8 cablecitos de cobre</b> entrelazados de a pares. Se trenzan así porque los giros anulan mágicamente la interferencia magnética externa (<span class="concept" data-term="emi">EMI</span>).<br><br><b>¿Qué es el conector <span class="concept" data-term="rj45">RJ45</span>?</b><br>Es la ficha de plástico transparente en las puntas del cable que hace "click".<br><br><b>¿Qué estás haciendo aquí?</b><br>Al conectar un puerto de datos del Switch hacia el Gateway, estás creando un "Uplink" o puente principal. Toda la escuela enviará sus mensajes por este único tubo hacia Internet.',
+        tasks: [ { id: 't1', text: 'Cablear puerto de datos Switch <-> Gateway', done: false } ],
+        check: function() {
+            let uplinked = false;
+            document.querySelectorAll('.cable-path:not([stroke="#222222"])').forEach(c => {
+                if (c.source_port && c.target_port) {
+                    let p1_el = c.source_port.closest('.placed-item');
+                    let p2_el = c.target_port.closest('.placed-item');
+                    if (p1_el && p2_el) {
+                        let p1 = p1_el.querySelector('.hw-label') ? p1_el.querySelector('.hw-label').innerText.toUpperCase() : '';
+                        let p2 = p2_el.querySelector('.hw-label') ? p2_el.querySelector('.hw-label').innerText.toUpperCase() : '';
+                        let hasSwitch = p1.includes('SWITCH') || p2.includes('SWITCH');
+                        let hasGateway = p1.includes('GATEWAY') || p2.includes('GATEWAY') || p1.includes('ROUTER') || p2.includes('ROUTER') || p1.includes('FIREWALL') || p2.includes('FIREWALL');
+                        if (hasSwitch && hasGateway) {
+                            uplinked = true;
+                        }
+                    }
+                }
+            });
+            if(uplinked) { this.tasks[0].done = true; return true; }
+            return false;
+        }
+    },
+    
+    // ==========================================
+    // DOMINIO 1: FUNDAMENTOS DE RED (20%)
+    // ==========================================
+    {
+        id: '1.1',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Componentes y Topologías',
+        desc: '<b>Instrucción:</b> Abre la consola (doble clic) de cualquier equipo y tipea <code>acknowledge topologies</code> para confirmar que entendiste qué es una red.',
+        theory: '<b>📘 CCNA 1.1: El Mapa de la Escuela</b><br><br>Los <b>Routers</b> son jefes de <span class="concept" data-term="capa3">Capa 3</span>, conectan ciudades. Los <b>Switches</b> dominan la <span class="concept" data-term="capa2">Capa 2</span>, conectan computadoras.<br><br>Las grandes empresas (como Google) ya no arman sus cables como un árbol desordenado. Usan una estructura llamada <b>Spine-Leaf</b>, donde todos los equipos están a exactamente &quot;1 salto de distancia&quot;. Así se aseguran de que ningún equipo sufra de LAG.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge topologies', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge topologies'); }
+    },
+    {
+        id: '1.2',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Medios Físicos y PoE',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge media</code> para confirmar que asimilaste los medios físicos de transmisión (Cobre, Fibra, Aire).',
+        theory: '<b>Fase 1.2: Cables Mágicos (Medios de transmisión)</b><br><br>Tienes 3 formas de enviar información en el mundo físico:<br><br>• <b>Cobre (<span class="concept" data-term="utp">UTP</span>):</b> Envía electricidad. Es barato, como una calle normal de ciudad. Pero si hay una tormenta eléctrica o pasa por un motor, la electricidad se corrompe (<span class="concept" data-term="emi">EMI</span>).<br>• <b>Fibra Óptica:</b> Es un tubo de vidrio al vacío por donde viaja Luz (Láser o LED). Es un tren bala. Inmune a las tormentas y llega a kilómetros sin perder velocidad.<br>• <b><span class="concept" data-term="poe">PoE (Power over Ethernet)</span>:</b> Magia pura de Cobre. El cable es tan bueno que, además de llevar la "carta" (datos), lleva "comida" (electricidad). Sirve para encender cámaras de seguridad o teléfonos sin tener que enchufarlos a la pared, ¡el switch los alimenta!',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge media', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge media'); }
+    },
+    {
+        id: '1.3',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Protocolos Base: TCP vs UDP',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge transport</code> para confirmar que comprendes cómo viajan los paquetes en TCP y UDP.',
+        theory: '<b>📘 CCNA 1.3: El Cartero y el Helicóptero</b><br><br>• <b>TCP (Transmission Control Protocol):</b> Es enviar una carta por correo certificado. El cartero (TCP) hace firmar un acuse de recibo. Si el paquete se pierde, lo reenvía. Es lento pero 100% seguro. Ej: Entrar a una web o bajar un archivo.<br>• <b>UDP (User Datagram Protocol):</b> Es tirar volantes publicitarios desde un helicóptero. Es rapidísimo, pero no sabes si la gente los leyó o si el viento se los llevó. Es ideal para cosas en vivo, donde un segundo de retraso arruina todo. Ej: Llamadas de voz o Partidas de Videojuegos Online.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge transport', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge transport'); }
+    },
+    {
+        id: '1.4',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Direccionamiento IPv4',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge ipv4</code> tras comprender cómo funciona el direccionamiento IP de 32 bits.',
+        theory: '<b>📘 CCNA 1.4: Entendiendo IPv4</b><br><br>Imagina que estás en clase y quieres pasarle una nota al asiento de al lado. Tu PC (<span class="concept" data-term="ip">IP</span>: 192.168.1.10) debe saber: <i>&quot;¿Esta persona está en mi salón, o en otro edificio?&quot;</i><br>Para averiguarlo usa la <b>Máscara de Subred</b> (ej. 255.255.255.0 o simplemente <b>/24</b>).<br>El 255 dice: <i>&quot;Este es el número del salón, tiene que ser idéntico&quot;</i>. El 0 dice: <i>&quot;Este es el número de asiento del alumno&quot;</i>. Si el salón de la IP destino coincide con el tuyo, tu PC le pasa la nota directo. Si no, se la da al Router.<br><br><b>Subnetting</b> es levantar paredes dentro de un auditorio de 200 alumnos ruidosos para crear 4 salones silenciosos de 50 alumnos, para evitar el ruido de <span class="concept" data-term="broadcast">Broadcast</span>.<br><span class="concept" data-term="vlsm">VLSM</span> es hacer salones a medida en vez de iguales: un auditorio para 100, un salón para 50, y un cuarto privado exacto para 2.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge ipv4', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge ipv4'); }
+    },
+    {
+        id: '1.5',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Direccionamiento IPv6',
+        desc: '<b>Objetivo:</b> Asignar una IPv6 a una interfaz.<br><br><b>¿Qué hace el comando?:</b><br>1. <code>enable</code> (Entra a modo administrador).<br>2. <code>configure terminal</code> (Abre la configuración global).<br>3. <code>interface vlan 1</code> (Entra al puerto virtual principal).<br>4. <code>ipv6 address 2001:db8::1/64</code> (Asigna la IP moderna).',
+        theory: '<b>📘 CCNA 1.5: IPv6 (El futuro ilimitado)</b><br><br>Se nos acabaron las IPs de versión 4 en el mundo. Así que creamos IPv6. Son larguísimas y usan letras (Hexadecimal). Existen 4 tipos clave:<br>• <b>Global Unicast (Empiezan con 2001:):</b> Tienen pasaporte. Pueden navegar libremente por Internet.<br>• <b>Link-Local (Empiezan con fe80:):</b> IPs de supervivencia. El equipo se la inventa solo para hablar con su compañero de banco. No pueden salir de la clase.<br>• <b>Multicast (ff00:):</b> El altavoz. Lo que envías aquí lo escuchan varios equipos a la vez.<br>• <b>Anycast:</b> Magia. Muchos servidores alrededor del mundo tienen la misma IP. El Router te conectará al servidor que esté geográficamente más cerca de ti.',
+        tasks: [ { id: 't1', text: 'Comando: ipv6 address 2001:db8::1/64', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('ipv6 address 2001:db8::1/64'); }
+    },
+    {
+        id: '1.6',
+        tier: 'DOMINIO 1: FUNDAMENTOS',
+        title: 'Principios Inalámbricos (RF)',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wireless</code> tras asimilar el comportamiento de las ondas Wi-Fi.',
+        theory: '<b>📘 CCNA 1.6: Ondas Invisibles (Wi-Fi)</b><br><br>El Wi-Fi transmite datos por el aire usando <span class="concept" data-term="rf">Radio Frecuencia (RF)</span>. Tienes dos frecuencias famosas:<br>• <b>2.4 GHz:</b> Es como gritar con voz grave. Llega lejísimos y atraviesa paredes gruesas, pero es muy lento y hay demasiada interferencia de microondas o Bluetooth.<br>• <b>5 GHz:</b> Es gritar con voz aguda. Es rapidísimo, pero si hay una pared enfrente, el sonido muere rápido.<br><br>El <span class="concept" data-term="ssid">SSID</span> es simplemente el nombre del Wi-Fi que eliges en tu teléfono.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge wireless', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge wireless'); }
+    },
+
+    // ==========================================
+    // DOMINIO 2: ACCESO A LA RED (20%)
+    // ==========================================
+    {
+        id: '2.1',
+        tier: 'DOMINIO 2: ACCESO A LA RED',
+        title: 'VLANs y Access Ports',
+        desc: '<b>Objetivo:</b> Crear una VLAN y asignarle un puerto.<br><br><b>Comandos y qué hacen:</b><br>1. <code>enable</code> <i>(Escala tus privilegios de Usuario a Administrador).</i><br>2. <code>configure terminal</code> <i>(Entra al modo donde puedes alterar el sistema).</i><br>3. <code>vlan 10</code> <i>(Crea la VLAN 10 "el departamento" en la base de datos).</i><br>4. <code>exit</code> <i>(Sales de la edición de la VLAN).</i><br>5. <code>interface f0/1</code> <i>(Seleccionas el enchufe físico número 1).</i><br>6. <code>switchport mode access</code> <i>(Fuerzas a que este enchufe sea EXCLUSIVO para una sola PC final, no para conectar a otros switches).</i>',
+        theory: '<b>📘 Misión 2.1: VLANs y Puertos</b><br><br>Una <span class="concept" data-term="vlan">VLAN</span> es como construir paredes de ladrillo dentro de un switch para separar a Recursos Humanos de Ventas. Un <b>Puerto de Acceso</b> es el enchufe final de la pared: le dices estrictamente al switch "<i>El cable conectado aquí pertenece SÓLO a la VLAN 10</i>". Nadie de otra VLAN podrá ver su tráfico.',
+        tasks: [ { id: 't1', text: 'Comandos: vlan 10 y switchport mode access', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('vlan 10') && window.cmdHistory.includes('switchport mode access'); }
+    },
+    {
+        id: '2.2',
+        tier: 'DOMINIO 2: ACCESO A LA RED',
+        title: 'Trunking (Enlaces Troncales)',
+        desc: '<b>Objetivo:</b> Crear un Troncal para pasar múltiples VLANs.<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface f0/2</code> <i>(Selecciona el puerto que va al router).</i><br>2. <code>switchport mode trunk</code> <i>(Le dices: "Deja de ser exclusivo. Conviértete en una autopista de múltiples carriles para pasar TODAS las VLANs mezcladas").</i>',
+        theory: '<b>📘 Misión 2.2: Trunking (El Súper Cable)</b><br><br>Si tienes 5 departamentos (VLANs) en tu switch y quieres enviar todo al router... ¿necesitas 5 cables físicos? ¡No! Conviertes un puerto a modo <b>Trunk</b> (<span class="concept" data-term="trunk">Enlace Troncal</span>). Funciona como una autopista de múltiples carriles donde el tráfico de todos los departamentos viaja mezclado, pero con etiquetas de color (802.1Q) para no confundirse.',
+        tasks: [ { id: 't1', text: 'Comando: switchport mode trunk', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('switchport mode trunk'); }
+    },
+    {
+        id: '2.3',
+        tier: 'DOMINIO 2: ACCESO A LA RED',
+        title: 'Prevención de Bucles: RSTP',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge spanning-tree</code> en la consola, confirmando que sabes cómo este protocolo evita bucles infinitos en cables redundantes.',
+        theory: '<b>📘 Misión 2.3: El Guardián de los Bucles</b><br><br>Si conectas dos switches entre sí con 2 cables para tener redundancia, creas un bucle. Los mensajes darán vueltas infinitas hasta derretir los switches (Tormenta de Broadcast). <span class="concept" data-term="stp">STP</span> es un algoritmo que apaga lógicamente un cable, dejándolo de repuesto, y lo enciende solo si el cable principal se corta.',
+        tasks: [ { id: 't1', text: 'Comando: spanning-tree mode rapid-pvst', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('spanning-tree mode rapid-pvst'); }
+    },
+    {
+        id: '2.4',
+        tier: 'DOMINIO 2: ACCESO A LA RED',
+        title: 'Agrupación: EtherChannel',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wlc</code>, asimilando que los WLC son los "cerebros" que controlan cientos de antenas simultáneamente.',
+        theory: '<b>📘 Misión 2.4: Arquitectura Inalámbrica</b><br><br>En tu casa, el Router Wi-Fi hace todo. Pero en un estadio con 500 antenas, configurarlas una a una es imposible. Se usan antenas "tontas" (Lightweight AP) conectadas por cable a un Cerebro Central llamado <span class="concept" data-term="wlc">WLC</span>. Tú configuras la contraseña en el Cerebro, y él se la inyecta a las 500 antenas al instante.',
+        tasks: [ { id: 't1', text: 'Comando: channel-group 1 mode active', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('channel-group 1 mode active'); }
+    },
+    {
+        id: '2.5',
+        tier: 'DOMINIO 2: ACCESO A LA RED',
+        title: 'Arquitectura Inalámbrica y WLC',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wlc</code>. (Nota: esta misión fue duplicada en la base, usa el mismo comando).',
+        theory: '<b>📘 CCNA 2.6 a 2.9:</b><br><br><b>WLC (Wireless LAN Controller):</b> En grandes redes, los Access Points son "Ligeros" (Lightweight APs). No tienen cerebro. Todo el cerebro (seguridad, roaming, SSIDs) reside en el WLC central. Se administran mediante una GUI web (HTTPS), no por CLI.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge wlc', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge wlc'); }
+    },
+
+    // ==========================================
+    // DOMINIO 3: CONECTIVIDAD IP (25%)
+    // ==========================================
+    {
+        id: '3.1',
+        tier: 'DOMINIO 3: CONECTIVIDAD IP',
+        title: 'La Tabla de Enrutamiento',
+        desc: '<b>Objetivo:</b> Ver la tabla de rutas del Router.<br><br><b>¿Qué hace el comando?:</b><br>1. <code>enable</code> <i>(Modo Administrador).</i><br>2. <code>show ip route</code> <i>(Le pide al router que muestre en pantalla su mapa interno de caminos. La letra "C" significa "Conectado Directamente").</i>',
+        theory: '<b>📘 Misión 3.1: Rutas Estáticas</b><br><br>Un Router es como un cartero en una intersección de carreteras. Si le llega un paquete para un país que no está en su mapa mental, tira el paquete a la basura.<br>Con <b>ip route</b> le estás enseñando a mano: "<i>Oye, para ir a la red 10.0.0.0, entrégale el paquete a tu vecino en la IP 192.168.1.254, él sabe el camino</i>".',
+        tasks: [ { id: 't1', text: 'Comando: show ip route', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('show ip route'); }
+    },
+    {
+        id: '3.2',
+        tier: 'DOMINIO 3: CONECTIVIDAD IP',
+        title: 'Rutas Estáticas Flotantes',
+        desc: '<b>Objetivo:</b> Ruta Estática y Ruta por Defecto.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code> <i>(Modo configuración).</i><br>2. <code>ip route 0.0.0.0 0.0.0.0 10.1.1.1</code> <i>(Le enseña a mano: "Cualquier paquete para cualquier red desconocida [0.0.0.0], tíraselo a la IP 10.1.1.1").</i>',
+        theory: '<b>📘 Misión 3.2: Ruta por Defecto (El Comodín)</b><br><br>Internet tiene millones de redes. El pobre Router no tiene memoria para aprendérselas todas. Así que usamos el comodín supremo <b>0.0.0.0 0.0.0.0</b>, que significa: "<i>Si no sabes a dónde va este paquete, tíraselo al Router de nuestro proveedor de Internet (10.1.1.1), que él se arregle</i>".',
+        tasks: [ { id: 't1', text: 'Comando: ip route ... 50', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('ip route 0.0.0.0 0.0.0.0 10.1.1.1 50'); }
+    },
+    {
+        id: '3.3',
+        tier: 'DOMINIO 3: CONECTIVIDAD IP',
+        title: 'Enrutamiento Dinámico: OSPFv2',
+        desc: '<b>Objetivo:</b> Activar el enrutamiento inteligente (OSPF).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>router ospf 1</code> <i>(Enciende el proceso del protocolo OSPF número 1. Esto hace que el router empiece a hablar automáticamente con sus vecinos para dibujar un mapa GPS de la red).</i>',
+        theory: '<b>📘 Misión 3.3: Enrutamiento Dinámico</b><br><br>Escribir rutas a mano es agotador. <span class="concept" data-term="ospf">OSPF</span> es un protocolo donde activas a los routers para que formen un grupo de WhatsApp y se compartan todos sus mapas. Si un cable de la ciudad se corta, el grupo se avisa en segundos y todos recalcular el mejor camino automáticamente usando un algoritmo GPS (Dijkstra).',
+        tasks: [ { id: 't1', text: 'Comando: router ospf 1', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('router ospf 1'); }
+    },
+    {
+        id: '3.4',
+        tier: 'DOMINIO 3: CONECTIVIDAD IP',
+        title: 'Redundancia FHRP (HSRP)',
+        desc: '<b>Objetivo:</b> Redundancia de Puerta de Enlace (FHRP).<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface f0/1</code> <i>(Entra a la interfaz local).</i><br>2. <code>standby 1 ip 192.168.1.254</code> <i>(Crea una IP "Fantasma" virtual. Si este router físico muere, otro tomará la IP 192.168.1.254 al instante sin que la red se caiga).</i>',
+        theory: '<b>📘 Misión 3.4: Redundancia de Puerta</b><br><br>Si las PCs de una oficina apuntan al Router A para salir a internet, y el Router A se quema, la oficina se queda sin red. FHRP (ej. HSRP) clona la mente de 2 routers físicos bajo una sola "IP Fantasma". Las PCs apuntan al fantasma, y si el router físico principal muere, el secundario asume el fantasma en 1 segundo.',
+        tasks: [ { id: 't1', text: 'Comando: standby 1 ip 192.168.1.254', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('standby 1 ip 192.168.1.254'); }
+    },
+
+    // ==========================================
+    // DOMINIO 4: SERVICIOS IP (10%)
+    // ==========================================
+    {
+        id: '4.1',
+        tier: 'DOMINIO 4: SERVICIOS IP',
+        title: 'NAT y PAT',
+        desc: '<b>Objetivo:</b> Ocultar las IPs privadas detrás de una IP pública (NAT).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ip nat inside source list 1 interface g0/1 overload</code> <i>(Traduce TODAS las IPs de tu empresa [list 1] para que salgan a internet disfrazadas bajo la IP pública única de la salida [interface g0/1] usando puertos [overload]).</i>',
+        theory: '<b>📘 Misión 4.1: NAT (El truco de magia)</b><br><br>En tu casa tienes 10 dispositivos, pero tu proveedor solo te da 1 IP Pública real. <span class="concept" data-term="nat">NAT</span> (Sobrecarga) es el traductor en la puerta de tu Router. Agarra la IP privada de tu teléfono, la esconde, le pega la IP Pública de la casa, manda la petición a Google, y cuando vuelve, sabe exactamente devolverle la respuesta a tu teléfono.',
+        tasks: [ { id: 't1', text: 'Comando de sobrecarga PAT', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('ip nat inside source list 1 interface g0/1 overload'); }
+    },
+    {
+        id: '4.2',
+        tier: 'DOMINIO 4: SERVICIOS IP',
+        title: 'NTP (Network Time Protocol)',
+        desc: '<b>Objetivo:</b> Sincronizar el reloj atómico del Router.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ntp server 8.8.8.8</code> <i>(Le dice al equipo: "Conéctate al servidor de Google [8.8.8.8] y sincroniza tus milisegundos exactos para que los registros de errores tengan fecha real").</i>',
+        theory: '<b>📘 Misión 4.2: Relojes Exactos (NTP)</b><br><br>Si hay un hackeo a las 3:15 AM, pero el Router de Ventas cree que es el año 1993, el FBI nunca resolverá el caso. NTP (Network Time Protocol) obliga a toda la escuela de routers a sincronizar sus relojes al milisegundo contra un servidor maestro (ej. Google 8.8.8.8).',
+        tasks: [ { id: 't1', text: 'Comando: ntp server 8.8.8.8', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('ntp server 8.8.8.8'); }
+    },
+    {
+        id: '4.3',
+        tier: 'DOMINIO 4: SERVICIOS IP',
+        title: 'Monitorización (Syslog, SNMP)',
+        desc: '<b>Objetivo:</b> Centralizar el registro de errores.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>logging 192.168.1.10</code> <i>(Le dice al Router: "Si ocurre algún fallo, no lo guardes en tu memoria interna. Envíalo de inmediato al Servidor Syslog en la IP 192.168.1.10").</i>',
+        theory: '<b>📘 Misión 4.3: Monitoreo (Syslog)</b><br><br>En lugar de que cada Router guarde sus errores en su propia memoria temporal (y la pierda si se apaga), configuramos <b>Syslog</b>. Esto hace que apenas ocurra un error (ej. se desconectó un cable), el Router envíe inmediatamente un reporte de texto a una computadora central (Servidor Syslog).',
+        tasks: [ { id: 't1', text: 'Comando: logging 192.168.1.10', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('logging 192.168.1.10'); }
+    },
+    {
+        id: '4.4',
+        tier: 'DOMINIO 4: SERVICIOS IP',
+        title: 'Calidad de Servicio (QoS)',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge qos</code>, comprendiendo que el policía de tráfico frena descargas pesadas para darle prioridad a la Voz/Llamadas.',
+        theory: '<b>📘 Misión 4.4: Calidad de Servicio (QoS)</b><br><br>Si el cable de Internet está al 100%, todos sufren. <b>QoS</b> es como tener a la policía de tránsito. Si alguien está descargando Netflix y al mismo tiempo alguien hace una llamada de voz, el policía frena a Netflix un segundo y deja pasar a la Voz por la fila VIP. Si la voz se retrasa, suena robótica.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge qos', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge qos'); }
+    },
+
+    // ==========================================
+    // DOMINIO 5: FUNDAMENTOS DE SEGURIDAD (15%)
+    // ==========================================
+    {
+        id: '5.1',
+        tier: 'DOMINIO 5: SEGURIDAD',
+        title: 'Amenazas y VPNs',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge threats</code>, entendiendo cómo las VPNs meten tu tráfico dentro de una "Caja Fuerte" cifrada al viajar por internet.',
+        theory: '<b>📘 Misión 5.1: VPNs y Cifrado</b><br><br>Enviar datos por Internet es como mandar una postal sin sobre: el cartero puede leerla. Una <b>VPN</b> (Red Privada Virtual) mete tu carta en una caja fuerte de acero, y la manda por un túnel secreto subterráneo a través de internet. Nadie en el medio puede leer ni alterar la información.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge threats', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge threats'); }
+    },
+    {
+        id: '5.2',
+        tier: 'DOMINIO 5: SEGURIDAD',
+        title: 'Modelo de Acceso (AAA)',
+        desc: '<b>Objetivo:</b> Autenticación externa (Radius/Tacacs).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>aaa new-model</code> <i>(Enciende el modelo de seguridad Avanzada. El router ya no validará las contraseñas localmente, sino que le preguntará a un Servidor de Seguridad central si el empleado tiene acceso).</i>',
+        theory: '<b>📘 Misión 5.2: Autenticación (AAA)</b><br><br>Si tienes 500 routers, crear cuentas de usuario en cada uno para los ingenieros toma semanas. <b>AAA</b> hace que el router no guarde las contraseñas. Cuando intentas entrar, el router "llama por teléfono" a un Servidor de Seguridad Central (RADIUS o TACACS) y le pregunta: <i>"¿El ingeniero Juan tiene permiso de apagar mis puertos?"</i>.',
+        tasks: [ { id: 't1', text: 'Comando: aaa new-model', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('aaa new-model'); }
+    },
+    {
+        id: '5.3',
+        tier: 'DOMINIO 5: SEGURIDAD',
+        title: 'Listas de Control de Acceso (ACL)',
+        desc: '<b>Objetivo:</b> Poner un Patovica/Guardia a filtrar IPs.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>access-list 10 deny 192.168.1.50</code> <i>(Le das la orden al guardia número 10: "Bloquea absolutamente todo el tráfico que venga desde la PC sospechosa 192.168.1.50").</i>',
+        theory: '<b>📘 Misión 5.3: El Patovica (ACL)</b><br><br>Una <span class="concept" data-term="acl">ACL</span> es la lista de invitados del club. Puedes decirle al Router: <i>"Deja pasar a todos, excepto a la IP de ese alumno rebelde"</i> (ACL Estándar). O mejor aún: <i>"Deja pasar al alumno a la web, pero prohíbele que acceda al servidor FTP a descargar películas"</i> (ACL Extendida).',
+        tasks: [ { id: 't1', text: 'Comando: access-list 10 deny ...', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('access-list 10 deny 192.168.1.50'); }
+    },
+    {
+        id: '5.4',
+        tier: 'DOMINIO 5: SEGURIDAD',
+        title: 'Seguridad L2 (DHCP Snooping & DAI)',
+        desc: '<b>Objetivo:</b> Bloquear suplantación de identidad interna.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ip arp inspection vlan 10</code> <i>(Protege el departamento 10. Si un empleado hacker intenta decir "¡Oigan, envíenme sus contraseñas, yo soy el Router!", el Switch interceptará su mentira ARP y la bloqueará).</i>',
+        theory: '<b>📘 Misión 5.4: Escudos Internos (DAI)</b><br><br>El peor ataque a veces viene desde adentro. Un alumno podría engañar a los demás diciendo "Oigan, yo soy el Router, mándenme sus mensajes a mí" (ARP Spoofing). <b>DAI</b> (Dynamic ARP Inspection) bloquea estas mentiras: el switch verifica las credenciales del alumno antes de dejarle hablar, descartando a los impostores al instante.',
+        tasks: [ { id: 't1', text: 'Comando: ip arp inspection vlan 10', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('ip arp inspection vlan 10'); }
+    },
+    {
+        id: '5.5',
+        tier: 'DOMINIO 5: SEGURIDAD',
+        title: 'Seguridad Inalámbrica',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wpa</code>, entendiendo por qué el protocolo WPA3 destruye los ataques de diccionario offline.',
+        theory: '<b>📘 Misión 5.5: Seguridad Wi-Fi</b><br><br>El aire es de todos, así que en Wi-Fi cifrar es vital. <b>WPA2</b> era el rey, pero se descubrió que los hackers podían grabar cómo te conectabas y luego irse a su casa a adivinar la contraseña offline con fuerza bruta. <b>WPA3</b> arregló esto bloqueando matemáticamente que alguien adivine la clave estando offline. Si no estás ahí, no entras.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge wpa', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge wpa'); }
+    },
+
+    // ==========================================
+    // DOMINIO 6: AUTOMATIZACIÓN (10%)
+    // ==========================================
+    {
+        id: '6.1',
+        tier: 'DOMINIO 6: AUTOMATIZACIÓN',
+        title: 'Redes Definidas por Software (SDN)',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge sdn</code> tras entender que ya no se configura equipo por equipo, sino que un solo panel web inyecta código a toda la red.',
+        theory: '<b>📘 Misión 6.1: Redes del Futuro (SDN)</b><br><br>Históricamente, debías entrar router por router con un cable físico a programarlo. <span class="concept" data-term="sdn">SDN</span> cambia las reglas del juego: le quitas el "Cerebro" a los routers, se los dejas como un caparazón tonto y conectas todos a un Controlador Centralizado en la nube (ej. Cisco DNA Center). ¡Con un solo clic, configuras 1000 routers a la vez!',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge sdn', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge sdn'); }
+    },
+    {
+        id: '6.2',
+        tier: 'DOMINIO 6: AUTOMATIZACIÓN',
+        title: 'APIs REST y Formato JSON',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge api</code> tras comprender que las máquinas hablan entre sí enviando texto estructurado en formato JSON a través de URLs.',
+        theory: '<b>📘 Misión 6.2: APIs y JSON</b><br><br>Para que los programas hablen con los routers automáticamente, no usan texto para humanos, usan <b>APIs REST</b> (como pedir comida en una ventanilla) y envían la información en un formato llamado <b>JSON</b>, que organiza los datos en listas y llaves { } para que la computadora los procese en milisegundos.',
+        tasks: [ { id: 't1', text: 'Comando: curl -X GET http://api/v1/status', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('curl -x get http://api/v1/status'); }
+    },
+    {
+        id: '6.3',
+        tier: 'DOMINIO 6: AUTOMATIZACIÓN',
+        title: 'Herramientas de Configuración',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge ansible</code>, asimilando que es una herramienta para ejecutar tareas repetitivas en 500 equipos con 1 solo clic.',
+        theory: '<b>📘 Misión 6.3: Chef, Ansible y Puppet</b><br><br>Son herramientas mágicas de automatización. Tú escribes un "Libro de Recetas" (Script) diciendo: <i>"Quiero que todos los routers de la empresa cambien su clave a 1234"</i>. <b>Ansible</b> toma esa receta, se conecta automáticamente a todos tus routers usando un agente SSH y hace el trabajo por ti en 15 segundos.',
+        tasks: [ { id: 't1', text: 'Comando: acknowledge config-mgmt', done: false } ],
+        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge config-mgmt'); }
+    }
+];
+
+let currentTicketIndex = 0;
+let isEvaluating = false;
+window.hasTriggeredLoop = window.hasTriggeredLoop || false; 
+window.cmdHistory = window.cmdHistory || [];
+
+
+const GLOSSARY = {
+    'ip': '<b>IP (Internet Protocol):</b><br>Es el "número de asiento" o identificador único de un equipo en la red.<br><a href="https://es.wikipedia.org/wiki/Direcci%C3%B3n_IP" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'lan': '<b>LAN (Red de Área Local):</b><br>Red privada pequeña, como tu casa o escuela. Los equipos hablan directo entre sí sin salir a Internet.<br><a href="https://es.wikipedia.org/wiki/Red_de_%C3%A1rea_local" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'wan': '<b>WAN (Red de Área Amplia):</b><br>Red gigante que une múltiples LANs. Internet es la WAN más grande del mundo.<br><a href="https://es.wikipedia.org/wiki/Red_de_%C3%A1rea_amplia" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'mac': '<b>Dirección MAC:</b><br>El "número de serie" de fábrica de tu tarjeta de red. Nunca cambia.<br><a href="https://es.wikipedia.org/wiki/Direcci%C3%B3n_MAC" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'broadcast': '<b>Broadcast:</b><br>Gritar un mensaje para que TODOS los equipos del salón (red) lo escuchen al mismo tiempo.<br><a href="https://es.wikipedia.org/wiki/Difusi%C3%B3n_amplia" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'emi': '<b>EMI (Interferencia Electromagnética):</b><br>Ruido eléctrico (motores, microondas, tormentas) que corrompe los datos en cables de cobre.<br><a href="https://es.wikipedia.org/wiki/Interferencia_electromagn%C3%A9tica" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'rf': '<b>Radio Frecuencia:</b><br>Ondas invisibles en el aire que transportan datos (Wi-Fi).<br><a href="https://es.wikipedia.org/wiki/Radiofrecuencia" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'ssid': '<b>SSID (Service Set IDentifier):</b><br>El nombre público de la red Wi-Fi que ves en tu teléfono.<br><a href="https://es.wikipedia.org/wiki/Service_Set_Identifier" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'vlan': '<b>VLAN (LAN Virtual):</b><br>Paredes invisibles que separan un mismo Switch en varios grupos distintos por seguridad.<br><a href="https://www.cisco.com/c/es_mx/support/docs/lan-switching/vlan/13769-9.html" target="_blank" style="color:#0f0;">[Doc Oficial Cisco]</a>',
+    'trunk': '<b>Enlace Troncal:</b><br>Un "super-cable" que permite que múltiples VLANs viajen por el mismo tubo sin mezclarse.<br><a href="https://es.wikipedia.org/wiki/VLAN_Trunking_Protocol" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'poe': '<b>PoE (Power over Ethernet):</b><br>Magia que envía corriente eléctrica por el mismo cable de datos de red, evitando usar enchufes de pared.<br><a href="https://es.wikipedia.org/wiki/Power_over_Ethernet" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'capa2': '<b>Capa 2 (Enlace de Datos):</b><br>Mundo de los Switches. Se entregan paquetes localmente usando direcciones MAC.<br><a href="https://es.wikipedia.org/wiki/Nivel_de_enlace_de_datos" target="_blank" style="color:#0f0;">[Leer Modelo OSI]</a>',
+    'capa3': '<b>Capa 3 (Red):</b><br>Mundo de los Routers. Buscan el mejor camino hacia redes lejanas usando IPs.<br><a href="https://es.wikipedia.org/wiki/Nivel_de_red" target="_blank" style="color:#0f0;">[Leer Modelo OSI]</a>',
+    'stp': '<b>STP (Spanning Tree Protocol):</b><br>Un guardián automático que bloquea cables de red redundantes para evitar que los mensajes den vueltas infinitamente.<br><a href="https://es.wikipedia.org/wiki/Spanning_tree" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'wlc': '<b>WLC (Wireless LAN Controller):</b><br>El "Cerebro Central" que controla docenas de antenas Wi-Fi tontas al mismo tiempo.<br><a href="https://www.cisco.com/c/en/us/products/wireless/wireless-lan-controller/index.html" target="_blank" style="color:#0f0;">[Ver WLCs en Cisco]</a>',
+    'lacp': '<b>LACP (EtherChannel):</b><br>Agarrar 4 cables físicos y pegarlos con cinta adhesiva lógica para que funcionen como 1 solo cable cuádruplemente rápido.<br><a href="https://www.cisco.com/c/es_mx/support/docs/lan-switching/etherchannel/12023-4.html" target="_blank" style="color:#0f0;">[Doc Oficial Cisco]</a>',
+    'ospf': '<b>OSPF:</b><br>Protocolo donde los Routers se cuentan chismes sobre qué caminos conocen, creando un mapa GPS de todo el mundo.<br><a href="https://es.wikipedia.org/wiki/Open_Shortest_Path_First" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'nat': '<b>NAT (Network Address Translation):</b><br>El truco de magia que permite que 500 PCs de tu casa salgan a Internet usando 1 sola IP pública.<br><a href="https://es.wikipedia.org/wiki/Traducci%C3%B3n_de_direcciones_de_red" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'dhcp': '<b>DHCP:</b><br>El secretario automático que le reparte IPs, Máscaras y Puertas de enlace a las PCs apenas se conectan.<br><a href="https://es.wikipedia.org/wiki/Protocolo_de_configuraci%C3%B3n_din%C3%A1mica_de_host" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'acl': '<b>ACL (Listas de Control de Acceso):</b><br>El "Patovica / Guardia" en la puerta del Router. Tú defines una lista de quién entra y quién se queda afuera.<br><a href="https://es.wikipedia.org/wiki/Lista_de_control_de_acceso" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    
+    'capa1': '<b>Capa 1 (Física):</b><br>El mundo tangible. Cables, electricidad, ondas de radio y fierros físicos. Todo lo que puedes tocar.<br><a href="https://es.wikipedia.org/wiki/Capa_f%C3%ADsica" target="_blank" style="color:#0f0;">[Leer Modelo OSI]</a>',
+    'rack': '<b>Bastidor (Rack 19"):</b><br>Armario metálico estandarizado para atornillar equipos. Permite apilar hardware verticalmente ahorrando espacio.<br><a href="https://es.wikipedia.org/wiki/Rack" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'utp': '<b>UTP (Par Trenzado No Blindado):</b><br>El clásico cable de red (azul o gris). Tiene 8 hilos de cobre trenzados por dentro para anular interferencias.<br><a href="https://es.wikipedia.org/wiki/Cable_de_par_trenzado" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'rj45': '<b>Conector RJ45:</b><br>La ficha de plástico transparente en las puntas del cable UTP que hace "click" al enchufarse.<br><a href="https://es.wikipedia.org/wiki/RJ-45" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'vlsm': '<b>VLSM (Máscara de Subred de Longitud Variable):</b><br>Técnica matemática avanzada para cortar un bloque de IPs en pedazos de tamaños irregulares, sin desperdiciar direcciones.<br><a href="https://es.wikipedia.org/wiki/VLSM" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'sdn': '<b>SDN (Software Defined Networking):</b><br>Separar el "Cerebro" del equipo de sus "Músculos". Programas la red entera desde una app central.<br><a href="https://es.wikipedia.org/wiki/Redes_definidas_por_software" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>'
+};
+
+
+window.glossaryHideTimer = null;
+function attachGlossary() {
+    let tt = document.getElementById('concept-tooltip');
+    if(!tt) {
+        tt = document.createElement('div');
+        tt.id = 'concept-tooltip';
+        document.body.appendChild(tt);
+        
+        // Keep alive when hovering tooltip
+        tt.addEventListener('mouseenter', () => {
+            clearTimeout(window.glossaryHideTimer);
+        });
+        tt.addEventListener('mouseleave', () => {
+            tt.classList.add('hidden');
+        });
+    }
+
+    document.querySelectorAll('.concept').forEach(el => {
+        el.addEventListener('mouseenter', (e) => {
+            clearTimeout(window.glossaryHideTimer);
+            const term = el.getAttribute('data-term');
+            tt.innerHTML = GLOSSARY[term] || 'Concepto no definido.';
+            tt.classList.remove('hidden');
+            
+            // Positioning below the word
+            const rect = el.getBoundingClientRect();
+            tt.style.left = rect.left + 'px';
+            tt.style.top = (rect.bottom + 5) + 'px';
+        });
+        el.addEventListener('mouseleave', () => {
+            window.glossaryHideTimer = setTimeout(() => {
+                tt.classList.add('hidden');
+            }, 300); // 300ms grace period to move mouse to tooltip
+        });
+    });
+}
+
+function renderTicket() {
+    const panel = document.getElementById('ticket-panel');
+    if(currentTicketIndex >= tickets.length) {
+        panel.innerHTML = `
+            <div class="ticket-header">
+                <span>[+] N.E.X.U.S. HELPDESK</span>
+                <span class="status-badge completed">CERTIFICACIÓN CCNA OBTENIDA</span>
+            </div>
+            <div class="ticket-body">
+                <h3 style="color:#0f0">¡Currículo CCNA Oficial (6 Dominios) Completado!</h3>
+                <p>Ha dominado el 100% de los temas teóricos y prácticos del CCNA 200-301.</p>
+                <div class="ticket-theory" style="border-left-color: #0f0;">
+                    <b>Experiencia Comprobada:</b><br>
+                    1. Fundamentos y Arquitecturas Físicas<br>
+                    2. Acceso (VLANs, STP, WLC, LACP)<br>
+                    3. Conectividad IP (Rutas Estáticas, OSPF, FHRP)<br>
+                    4. Servicios (NAT, DHCP, NTP, Syslog, QoS)<br>
+                    5. Seguridad (ACLs, Snooping, DAI, AAA, WPA3)<br>
+                    6. SDN, APIs REST, JSON, Ansible
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    const tkt = tickets[currentTicketIndex];
+    document.getElementById('ticket-tier').innerText = tkt.tier;
+    document.getElementById('ticket-title').innerText = `${tkt.id}: ${tkt.title}`;
+    document.getElementById('ticket-desc').innerHTML = tkt.desc;
+    
+    let theoryBlock = document.getElementById('ticket-theory-block');
+    if(!theoryBlock) {
+        theoryBlock = document.createElement('div');
+        theoryBlock.id = 'ticket-theory-block';
+        theoryBlock.className = 'ticket-theory';
+        const progressDiv = document.querySelector('.ticket-progress');
+        progressDiv.parentNode.insertBefore(theoryBlock, progressDiv);
+    }
+    theoryBlock.innerHTML = tkt.theory;
+    
+    const statusBadge = document.getElementById('ticket-status');
+    statusBadge.innerText = 'ACTIVO';
+    statusBadge.className = 'status-badge';
+    panel.classList.remove('success');
+    
+    const ul = document.getElementById('ticket-tasks');
+    ul.innerHTML = '';
+    tkt.tasks.forEach(task => {
+        ul.innerHTML += `<li><span class="task-box ${task.done ? 'done' : ''}"></span> ${task.text}</li>`;
+    });
+    attachGlossary();
+}
+
+function evaluateTickets() {
+    if(currentTicketIndex >= tickets.length || isEvaluating) return;
+    
+    const tkt = tickets[currentTicketIndex];
+    const isComplete = tkt.check();
+    
+    renderTicket();
+
+    if (isComplete) {
+        isEvaluating = true;
+        const statusBadge = document.getElementById('ticket-status');
+        const panel = document.getElementById('ticket-panel');
+        
+        statusBadge.innerText = 'COMPLETADO';
+        statusBadge.className = 'status-badge completed';
+        panel.classList.add('success');
+        
+        setTimeout(() => {
+            currentTicketIndex++;
+            isEvaluating = false;
+            // No reseteamos cmdHistory para misiones dependientes
+            renderTicket();
+        }, 6000); 
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderTicket();
+    
+    const observer = new MutationObserver(() => {
+        clearTimeout(window.ticketEvalTimer);
+        window.ticketEvalTimer = setTimeout(() => {
+            evaluateTickets();
+        }, 150);
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'data-slot'] });
+    document.getElementById('cli-input').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') { setTimeout(evaluateTickets, 250); }
+    });
+});
+
+// DEBUG: Botón Skip
+
+// DEBUG: Botón Prev
+const prevBtn = document.getElementById('debug-prev-btn');
+if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+        if (currentTicketIndex > 0) {
+            currentTicketIndex--;
+            const tkt = tickets[currentTicketIndex];
+            tkt.tasks.forEach(t => t.done = false); // Reset the tasks so it's fresh
+            
+            // Si tiene comandos a comprobar, borramos el history para obligarlo a repetirlo si quiere
+            // window.cmdHistory = []; 
+            
+            document.getElementById('ticket-status').innerText = 'ACTIVO';
+            document.getElementById('ticket-status').className = 'status-badge';
+            isEvaluating = false;
+            renderTicket();
+        }
+    });
+}
+
+const skipBtn = document.getElementById('debug-skip-btn');
+if (skipBtn) {
+    skipBtn.addEventListener('click', () => {
+        if (currentTicketIndex >= tickets.length || isEvaluating) return;
+        isEvaluating = true;
+        
+        const tkt = tickets[currentTicketIndex];
+        tkt.tasks.forEach(t => t.done = true);
+        
+        document.getElementById('ticket-status').innerText = 'DEBUG-SKIP';
+        document.getElementById('ticket-status').className = 'status-badge completed';
+        renderTicket();
+        
+        setTimeout(() => {
+            currentTicketIndex++;
+            isEvaluating = false;
+            
+            if(currentTicketIndex < tickets.length) {
+                document.getElementById('ticket-status').innerText = 'ACTIVO';
+                document.getElementById('ticket-status').className = 'status-badge';
+                renderTicket();
+            } else {
+                renderTicket();
+            }
+        }, 800);
+    });
+}

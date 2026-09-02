@@ -1,0 +1,8 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="40" width="80" height="30" fill="#005073" stroke="#fff" stroke-width="2"/>
+  <polygon points="10,40 30,25 90,25 70,40" fill="#0073a5" stroke="#fff" stroke-width="2"/>
+  <polygon points="90,25 90,55 70,70 70,40" fill="#003b54" stroke="#fff" stroke-width="2"/>
+  <!-- Double arrows -->
+  <path d="M25,36 h40 l-5,-5 v3 l15,7 l-15,7 v-3 h-40 z" fill="#fff"/>
+  <path d="M75,47 h-40 l5,5 v-3 l-15,-7 l15,-7 v3 h40 z" fill="#fff"/>
+</svg>

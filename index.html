@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>N.E.X.U.S. Net-Lab: Fortinet Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ERROR MODAL -->
+    <div id="error-modal" class="hidden">
+        <div class="error-content">
+            <h2 id="error-title">⚠️ ERROR DE RED</h2>
+            <p id="error-desc">Detalles del fallo...</p>
+            <button onclick="document.getElementById('error-modal').classList.add('hidden')">REINICIAR SISTEMA</button>
+        </div>
+    </div>
+
+
+    <!-- N.E.X.U.S. HELPDESK TICKETS -->
+    <div id="ticket-panel">
+        <div class="ticket-header">
+            <span>[+] N.E.X.U.S. HELPDESK</span><button id="debug-prev-btn" style="margin-left: 10px; background: #333; color: #fff; border: 1px solid #555; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Volver a la misión anterior">⏮ PREV</button><button id="debug-autorack-btn" style="margin-left: 10px; background: #0078D7; color: #fff; border: 1px solid #005a9e; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Auto-armar rack completo (Ahorra tiempo)">⚡ AUTO-RACK</button><button id="debug-skip-btn" style="margin-left: 10px; background: #333; color: #ffeb3b; border: 1px solid #555; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Saltear misión actual (Debug)">⏭ SKIP</button>
+            <span id="ticket-status" class="status-badge">ACTIVO</span>
+        </div>
+        <div class="ticket-body">
+            <div id="ticket-tier" style="color:#0078D7; font-size: 0.75rem; margin-bottom: 5px; font-weight: bold; text-transform: uppercase;"></div>
+            <h3 id="ticket-title">Iniciando NOC...</h3>
+            <p id="ticket-desc">Cargando base de datos de contratos...</p>
+            <div class="ticket-progress">
+                <ul id="ticket-tasks"></ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-container">
+        <!-- Sidebar: Inventario -->
+        <div id="inventory">
+            <h2>Ecosistema Cisco (CCNA)</h2>
+            <div class="inv-item" draggable="true" data-type="rack">Bastidor Rack 42U</div>
+            <div class="inv-item" draggable="true" data-type="forti-firewall" data-vendor="cisco">Router Cisco (Firewall)</div>
+            <div class="inv-item" draggable="true" data-type="forti-switch" data-vendor="cisco">Switch Cisco (Catalyst)</div>
+            <div class="inv-item" draggable="true" data-type="pdu" data-vendor="generic">PDU (Energía 220V)</div>
+              <div class="inv-item" draggable="true" data-type="forti-gateway" data-vendor="cisco">Gateway Cisco</div>
+            
+            
+            <h2 style="margin-top: 15px;">Equipos Cliente</h2>
+            <div class="inv-item" draggable="true" data-type="laptop" data-vendor="windows">
+                <img src="img/laptop.svg" width="20" height="20" style="pointer-events: none;">
+                <span style="pointer-events: none;">Laptop (Consola)</span>
+            </div>
+
+            <h2 style="margin-top: 15px;">Bobina de Cables</h2>
+            <div id="cable-tools">
+                <div class="cable-color selected" data-color="#3b82f6" style="background: #3b82f6">UTP (Azul)</div>
+                <div class="cable-color" data-color="#eab308" style="background: #eab308; color: #000">UTP (Amarillo)</div>
+                <div class="cable-color" data-color="#f97316" style="background: #f97316">Fibra (Naranja)</div>
+                <div class="cable-color" data-color="#222222" style="background: #222222; border: 1px solid #555">Poder (Negro)</div>
+            </div>
+
+            <div class="status-box">
+                <p>Modo:</p>
+                <b id="action-mode">ARRASTRAR EQUIPO</b>
+            </div>
+        </div>
+
+        <!-- Center: Workspace -->
+        <div id="workspace">
+            <svg id="cables-layer"></svg>
+        </div>
+
+        <!-- Tooltip Hover -->
+        <div id="tooltip" class="hidden"></div>
+
+        <!-- CLI Overlay -->
+        <div id="cli-overlay" class="hidden">
+            <div id="cli-header">
+                <span id="cli-title">Consola</span>
+                <button id="cli-close">X</button>
+            </div>
+            <div id="cli-terminal">
+                <div id="cli-output"></div>
+                <div class="cli-input-line">
+                    <span id="cli-prompt">></span>
+                    <input type="text" id="cli-input" autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/game.js?v=1788318401"></script>
+    <script src="js/tickets.js?v=1788318401"></script>
+    <script src="js/cli.js?v=1788318401"></script>
+</body>
+</html>
