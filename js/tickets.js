@@ -75,7 +75,7 @@ const tickets = [
         tier: 'DOMINIO 1: FUNDAMENTOS',
         title: 'Componentes y Topologías',
         desc: '<b>Instrucción:</b> Abre la consola (doble clic) de cualquier equipo y tipea <code>acknowledge topologies</code> para confirmar que entendiste qué es una red.',
-        theory: '<b>📘 CCNA 1.1: El Mapa de la Escuela</b><br><br>Los <b>Routers</b> son jefes de <span class="concept" data-term="capa3">Capa 3</span>, conectan ciudades. Los <b>Switches</b> dominan la <span class="concept" data-term="capa2">Capa 2</span>, conectan computadoras.<br><br>Las grandes empresas (como Google) ya no arman sus cables como un árbol desordenado. Usan una estructura llamada <b>Spine-Leaf</b>, donde todos los equipos están a exactamente &quot;1 salto de distancia&quot;. Así se aseguran de que ningún equipo sufra de LAG.',
+        theory: '<b>📘 CCNA 1.1: El Mapa de la Red</b><br><br><b>Routers</b> dominan la <span class="concept" data-term="capa3">Capa 3</span> y conectan ciudades. <b>Switches</b> dominan la <span class="concept" data-term="capa2">Capa 2</span> conectando PCs.<br><br>• <b><span class="concept" data-term="spine_leaf">Spine-Leaf:</span></b> Topología de Data Centers modernos donde todos están a "1 salto".<br>• <b><span class="concept" data-term="soho">SOHO:</span></b> Redes pequeñas de casa/oficina con un router todo-en-uno.<br>• <b><span class="concept" data-term="on_prem">On-premises</span> vs Cloud:</b> Tus servidores pueden estar físicamente en tu edificio (On-prem) o alquilados en internet (Nube Pública/AWS).',
         tasks: [ { id: 't1', text: 'Comando: acknowledge topologies', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge topologies'); }
     },
@@ -142,7 +142,7 @@ const tickets = [
         tier: 'DOMINIO 2: ACCESO A LA RED',
         title: 'Trunking (Enlaces Troncales)',
         desc: '<b>Objetivo:</b> Crear un Troncal para pasar múltiples VLANs.<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface f0/2</code> <i>(Selecciona el puerto que va al router).</i><br>2. <code>switchport mode trunk</code> <i>(Le dices: "Deja de ser exclusivo. Conviértete en una autopista de múltiples carriles para pasar TODAS las VLANs mezcladas").</i>',
-        theory: '<b>📘 Misión 2.2: Trunking (El Súper Cable)</b><br><br>Si tienes 5 departamentos (VLANs) en tu switch y quieres enviar todo al router... ¿necesitas 5 cables físicos? ¡No! Conviertes un puerto a modo <b>Trunk</b> (<span class="concept" data-term="trunk">Enlace Troncal</span>). Funciona como una autopista de múltiples carriles donde el tráfico de todos los departamentos viaja mezclado, pero con etiquetas de color (802.1Q) para no confundirse.',
+        theory: '<b>📘 CCNA 2.2: Trunking (El Súper Cable)</b><br><br>Un <b>Enlace Troncal</b> (<span class="concept" data-term="trunk">Trunk</span>) es una autopista de múltiples carriles donde el tráfico de todas las VLANs viaja mezclado. Para no confundirse, usa <b><span class="concept" data-term="8021q">802.1Q</span></b> (una etiqueta de color).<br>Además, los switches tienen <b><span class="concept" data-term="dtp">DTP (Dynamic Trunking Protocol)</span></b>, que intenta negociar troncales automáticamente si no los configuras manualmente.',
         tasks: [ { id: 't1', text: 'Comando: switchport mode trunk', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('switchport mode trunk'); }
     },
@@ -158,9 +158,9 @@ const tickets = [
     {
         id: '2.4',
         tier: 'DOMINIO 2: ACCESO A LA RED',
-        title: 'Agrupación: EtherChannel',
-        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wlc</code>, asimilando que los WLC son los "cerebros" que controlan cientos de antenas simultáneamente.',
-        theory: '<b>📘 Misión 2.4: Arquitectura Inalámbrica</b><br><br>En tu casa, el Router Wi-Fi hace todo. Pero en un estadio con 500 antenas, configurarlas una a una es imposible. Se usan antenas "tontas" (Lightweight AP) conectadas por cable a un Cerebro Central llamado <span class="concept" data-term="wlc">WLC</span>. Tú configuras la contraseña en el Cerebro, y él se la inyecta a las 500 antenas al instante.',
+        title: 'EtherChannel (LACP)',
+        desc: '<b>Objetivo:</b> Agrupar enlaces físicos.<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface range f0/1 - 2</code><br>2. <code>channel-group 1 mode active</code> <i>(Agrupa estos cables usando el protocolo LACP para que funcionen como un solo súper-cable y no sean bloqueados por STP).</i>',
+        theory: '<b>📘 CCNA 2.4: EtherChannel (LACP)</b><br><br>Si conectas 4 cables entre dos switches para sumar velocidad, STP bloqueará 3 para evitar bucles. Usando <span class="concept" data-term="lacp">LACP (EtherChannel)</span> engañas a STP: pegas lógicamente los 4 cables con cinta adhesiva para que parezcan 1 solo enlace gigantesco.',
         tasks: [ { id: 't1', text: 'Comando: channel-group 1 mode active', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('channel-group 1 mode active'); }
     },
@@ -238,18 +238,18 @@ const tickets = [
     {
         id: '4.3',
         tier: 'DOMINIO 4: SERVICIOS IP',
-        title: 'Monitorización (Syslog, SNMP)',
+        title: 'Gestión: Syslog, SNMP y TFTP',
         desc: '<b>Objetivo:</b> Centralizar el registro de errores.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>logging 192.168.1.10</code> <i>(Le dice al Router: "Si ocurre algún fallo, no lo guardes en tu memoria interna. Envíalo de inmediato al Servidor Syslog en la IP 192.168.1.10").</i>',
-        theory: '<b>📘 Misión 4.3: Monitoreo (Syslog)</b><br><br>En lugar de que cada Router guarde sus errores en su propia memoria temporal (y la pierda si se apaga), configuramos <b>Syslog</b>. Esto hace que apenas ocurra un error (ej. se desconectó un cable), el Router envíe inmediatamente un reporte de texto a una computadora central (Servidor Syslog).',
+        theory: '<b>📘 CCNA 4.3: Monitorización y Gestión</b><br><br>• <b><span class="concept" data-term="syslog">Syslog:</span></b> Envía un reporte de texto al servidor central cada vez que hay un fallo.<br>• <b><span class="concept" data-term="snmp">SNMP:</span></b> Protocolo para monitorear el estado del equipo en tiempo real (ej. % de CPU, uso del cable).<br>• <b><span class="concept" data-term="tftp">TFTP/FTP/SCP:</span></b> Protocolos usados para hacer backups de la configuración del Router hacia un servidor externo.',
         tasks: [ { id: 't1', text: 'Comando: logging 192.168.1.10', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('logging 192.168.1.10'); }
     },
     {
         id: '4.4',
         tier: 'DOMINIO 4: SERVICIOS IP',
-        title: 'Calidad de Servicio (QoS)',
-        desc: '<b>Instrucción:</b> Tipea <code>acknowledge qos</code>, comprendiendo que el policía de tráfico frena descargas pesadas para darle prioridad a la Voz/Llamadas.',
-        theory: '<b>📘 Misión 4.4: Calidad de Servicio (QoS)</b><br><br>Si el cable de Internet está al 100%, todos sufren. <b>QoS</b> es como tener a la policía de tránsito. Si alguien está descargando Netflix y al mismo tiempo alguien hace una llamada de voz, el policía frena a Netflix un segundo y deja pasar a la Voz por la fila VIP. Si la voz se retrasa, suena robótica.',
+        title: 'Servicios DHCP y QoS',
+        desc: '<b>Instrucción:</b> Tipea <code>acknowledge qos</code>, comprendiendo que el policía de tráfico prioriza la voz, y que DHCP reparte IPs.',
+        theory: '<b>📘 CCNA 4.4: QoS y DHCP</b><br><br>• <b><span class="concept" data-term="dhcp">DHCP</span>:</b> El servidor automático que le alquila IPs, Máscaras y Puertas de enlace a los endpoints al instante.<br>• <b><span class="concept" data-term="qos">QoS:</span></b> El policía de tráfico. Frenará los paquetes de Netflix si se satura la red para garantizar que las llamadas de VozIP (que no toleran retrasos) pasen por la fila VIP.',
         tasks: [ { id: 't1', text: 'Comando: acknowledge qos', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge qos'); }
     },
@@ -287,9 +287,9 @@ const tickets = [
     {
         id: '5.4',
         tier: 'DOMINIO 5: SEGURIDAD',
-        title: 'Seguridad L2 (DHCP Snooping & DAI)',
+        title: 'Seguridad Capa 2: Port Security y DAI',
         desc: '<b>Objetivo:</b> Bloquear suplantación de identidad interna.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ip arp inspection vlan 10</code> <i>(Protege el departamento 10. Si un empleado hacker intenta decir "¡Oigan, envíenme sus contraseñas, yo soy el Router!", el Switch interceptará su mentira ARP y la bloqueará).</i>',
-        theory: '<b>📘 Misión 5.4: Escudos Internos (DAI)</b><br><br>El peor ataque a veces viene desde adentro. Un alumno podría engañar a los demás diciendo "Oigan, yo soy el Router, mándenme sus mensajes a mí" (ARP Spoofing). <b>DAI</b> (Dynamic ARP Inspection) bloquea estas mentiras: el switch verifica las credenciales del alumno antes de dejarle hablar, descartando a los impostores al instante.',
+        theory: '<b>📘 CCNA 5.4: Amenazas Internas en Capa 2</b><br><br>Los ataques más comunes desde adentro:<br>• <b><span class="concept" data-term="port_sec">Port Security:</span></b> Apaga el puerto si se conecta una Dirección MAC desconocida.<br>• <b><span class="concept" data-term="snooping">DHCP Snooping:</span></b> Evita que un hacker conecte un servidor DHCP falso para robar tráfico.<br>• <b><span class="concept" data-term="dai">Dynamic ARP Inspection (DAI):</span></b> Bloquea la suplantación de identidad ARP (Man-In-The-Middle).',
         tasks: [ { id: 't1', text: 'Comando: ip arp inspection vlan 10', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ip arp inspection vlan 10'); }
     },
@@ -311,7 +311,7 @@ const tickets = [
         tier: 'DOMINIO 6: AUTOMATIZACIÓN',
         title: 'Redes Definidas por Software (SDN)',
         desc: '<b>Instrucción:</b> Tipea <code>acknowledge sdn</code> tras entender que ya no se configura equipo por equipo, sino que un solo panel web inyecta código a toda la red.',
-        theory: '<b>📘 Misión 6.1: Redes del Futuro (SDN)</b><br><br>Históricamente, debías entrar router por router con un cable físico a programarlo. <span class="concept" data-term="sdn">SDN</span> cambia las reglas del juego: le quitas el "Cerebro" a los routers, se los dejas como un caparazón tonto y conectas todos a un Controlador Centralizado en la nube (ej. Cisco DNA Center). ¡Con un solo clic, configuras 1000 routers a la vez!',
+        theory: '<b>📘 CCNA 6.1: Redes del Futuro (SDN)</b><br><br><span class="concept" data-term="sdn">SDN</span> separa el "Cerebro" (Control Plane) del equipo y lo mueve a un Controlador Centralizado.<br>Ecosistema Cisco:<br>• <b><span class="concept" data-term="dna">Cisco DNA Center:</span></b> El panel web maestro para administrar switches.<br>• <b><span class="concept" data-term="sdaccess">SD-Access:</span></b> Crea redes LAN empresariales automatizadas usando DNA Center.<br>• <b><span class="concept" data-term="sdwan">SD-WAN:</span></b> Controla las conexiones WAN mundiales por software, decidiendo en milisegundos si enviar tráfico por Fibra o por 4G.',
         tasks: [ { id: 't1', text: 'Comando: acknowledge sdn', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge sdn'); }
     },
@@ -320,7 +320,7 @@ const tickets = [
         tier: 'DOMINIO 6: AUTOMATIZACIÓN',
         title: 'APIs REST y Formato JSON',
         desc: '<b>Instrucción:</b> Tipea <code>acknowledge api</code> tras comprender que las máquinas hablan entre sí enviando texto estructurado en formato JSON a través de URLs.',
-        theory: '<b>📘 Misión 6.2: APIs y JSON</b><br><br>Para que los programas hablen con los routers automáticamente, no usan texto para humanos, usan <b>APIs REST</b> (como pedir comida en una ventanilla) y envían la información en un formato llamado <b>JSON</b>, que organiza los datos en listas y llaves { } para que la computadora los procese en milisegundos.',
+        theory: '<b>📘 CCNA 6.2: APIs REST y JSON</b><br><br><b>APIs REST:</b> Las máquinas usan verbos HTTP para pedirse cosas (GET=Leer, POST=Crear, PUT/PATCH=Modificar, DELETE=Borrar).<br><b>JSON:</b> El formato de texto universal que agrupa la información con llaves y corchetes para que el router y el programa externo se entiendan en milisegundos.',
         tasks: [ { id: 't1', text: 'Comando: curl -X GET http://api/v1/status', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('curl -x get http://api/v1/status'); }
     },
@@ -342,6 +342,23 @@ window.cmdHistory = window.cmdHistory || [];
 
 
 const GLOSSARY = {
+
+    'snooping': '<b><span class="concept" data-term="snooping">DHCP Snooping:</span></b><br>Técnica de seguridad que bloquea servidores DHCP falsos (rogue) que intentan dar IPs maliciosas a los usuarios.<br><a href="https://es.wikipedia.org/wiki/DHCP_snooping" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'dtp': '<b><span class="concept" data-term="dtp">DTP (Dynamic Trunking Protocol)</span>:</b><br>Protocolo propietario de Cisco que negocia automáticamente si un cable debe ser un Enlace Troncal (Trunk) o de Acceso.<br><a href="https://es.wikipedia.org/wiki/Dynamic_Trunking_Protocol" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'port_sec': '<b><span class="concept" data-term="port_sec">Port Security:</span></b><br>Función de Capa 2 que apaga el puerto del switch si alguien desconecta la PC oficial y conecta una laptop no autorizada (reconocida por su MAC).<br><a href="https://es.wikipedia.org/wiki/Seguridad_de_puertos" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'snmp': '<b>SNMP (Simple Network Management Protocol):</b><br>El estándar universal para monitorear la "salud" (CPU, RAM, Temperatura, Tráfico) de los equipos de red.<br><a href="https://es.wikipedia.org/wiki/Simple_Network_Management_Protocol" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'tftp': '<b>TFTP (Trivial File Transfer Protocol):</b><br>Un protocolo ultra-ligero usado por los routers para guardar o descargar copias de seguridad de sus configuraciones.<br><a href="https://es.wikipedia.org/wiki/Trivial_File_Transfer_Protocol" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'syslog': '<b><span class="concept" data-term="syslog">Syslog:</span></b><br>Un sistema que recolecta los mensajes de error y eventos críticos de cientos de routers en un solo servidor para facilitar la auditoría.<br><a href="https://es.wikipedia.org/wiki/Syslog" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'dai': '<b>DAI (Dynamic ARP Inspection):</b><br>Escudo protector que intercepta mensajes ARP falsos, previniendo los ataques "Man-in-the-Middle".<br><a href="https://www.cisco.com/c/es_mx/support/docs/switches/catalyst-6500-series-switches/72928-dynamicarp.html" target="_blank" style="color:#0f0;">[Doc Oficial Cisco]</a>',
+    'qos': '<b>QoS (Quality of Service):</b><br>Mecanismo que clasifica el tráfico para darle trato VIP (prioridad) a cosas sensibles al lag como llamadas o videollamadas.<br><a href="https://es.wikipedia.org/wiki/Calidad_de_servicio" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'dna': '<b><span class="concept" data-term="dna">Cisco DNA Center:</span></b><br>Una plataforma de control (SDN) gráfica. El panel de mando supremo para manejar una red empresarial completa de Cisco.<br><a href="https://www.cisco.com/c/es_mx/products/cloud-systems-management/dna-center/index.html" target="_blank" style="color:#0f0;">[Página de Cisco]</a>',
+    'sdaccess': '<b><span class="concept" data-term="sdaccess">SD-Access:</span></b><br>Evolución de las VLANs. Permite aplicar políticas de seguridad a nivel mundial para que el acceso de un usuario sea igual en cualquier sucursal.<br><a href="https://www.cisco.com/c/es_mx/solutions/enterprise-networks/software-defined-access/index.html" target="_blank" style="color:#0f0;">[Página de Cisco]</a>',
+    'sdwan': '<b><span class="concept" data-term="sdwan">SD-WAN:</span></b><br>Reducir costos combinando líneas caras dedicadas con Internet barato, dejando que el software elija el mejor camino en tiempo real.<br><a href="https://es.wikipedia.org/wiki/SD-WAN" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'spine_leaf': '<b><span class="concept" data-term="spine_leaf">Spine-Leaf:</span></b><br>Topología de centro de datos parecida a una telaraña. Todos los switches hoja (Leaf) se conectan a todos los espina (Spine), reduciendo cuellos de botella.<br><a href="https://www.cisco.com/c/es_mx/support/docs/switches/nexus-9000-series-switches/118997-technote-nexus-00.html" target="_blank" style="color:#0f0;">[Doc Oficial Cisco]</a>',
+    'soho': '<b><span class="concept" data-term="soho">SOHO:</span></b><br>Small Office / Home Office. Un router todo-en-uno que tienes en casa. Actúa como modem, switch, firewall y punto de acceso Wi-Fi a la vez.<br><a href="https://es.wikipedia.org/wiki/SOHO_(inform%C3%A1tica)" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    'on_prem': '<b><span class="concept" data-term="on_prem">On-premises</span> (Local):</b><br>Cuando la empresa compra, instala y mantiene sus propios servidores de chapa y silicio en sus propios sótanos.<br><a href="https://es.wikipedia.org/wiki/<span class="concept" data-term="on_prem">On-premises</span>_software" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+    '8021q': '<b><span class="concept" data-term="8021q">802.1Q</span> (Dot1Q):</b><br>El estándar universal que le inyecta una etiqueta a un paquete para indicar a qué VLAN pertenece antes de enviarlo por un tronco.<br><a href="https://es.wikipedia.org/wiki/IEEE_<span class="concept" data-term="8021q">802.1Q</span>" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
+
     'ip': '<b>IP (Internet Protocol):</b><br>Es el "número de asiento" o identificador único de un equipo en la red.<br><a href="https://es.wikipedia.org/wiki/Direcci%C3%B3n_IP" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
     'lan': '<b>LAN (Red de Área Local):</b><br>Red privada pequeña, como tu casa o escuela. Los equipos hablan directo entre sí sin salir a Internet.<br><a href="https://es.wikipedia.org/wiki/Red_de_%C3%A1rea_local" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
     'wan': '<b>WAN (Red de Área Amplia):</b><br>Red gigante que une múltiples LANs. Internet es la WAN más grande del mundo.<br><a href="https://es.wikipedia.org/wiki/Red_de_%C3%A1rea_amplia" target="_blank" style="color:#0f0;">[Leer más en Wikipedia]</a>',
