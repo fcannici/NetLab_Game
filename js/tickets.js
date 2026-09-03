@@ -119,10 +119,22 @@ const tickets = [
         id: '1.6',
         tier: 'DOMINIO 1: FUNDAMENTOS',
         title: 'Principios Inalámbricos (RF)',
-        desc: '<b>Instrucción:</b> Tipea <code>acknowledge wireless</code> tras asimilar el comportamiento de las ondas Wi-Fi.',
-        theory: '<b>📘 CCNA 1.6: Ondas Invisibles (Wi-Fi)</b><br><br>El Wi-Fi transmite datos por el aire usando <span class="concept" data-term="rf">Radio Frecuencia (RF)</span>. Tienes dos frecuencias famosas:<br>• <b>2.4 GHz:</b> Es como gritar con voz grave. Llega lejísimos y atraviesa paredes gruesas, pero es muy lento y hay demasiada interferencia de microondas o Bluetooth.<br>• <b>5 GHz:</b> Es gritar con voz aguda. Es rapidísimo, pero si hay una pared enfrente, el sonido muere rápido.<br><br>El <span class="concept" data-term="ssid">SSID</span> es simplemente el nombre del Wi-Fi que eliges en tu teléfono.',
-        tasks: [ { id: 't1', text: 'Comando: acknowledge wireless', done: false } ],
-        check: function() { return window.cmdHistory && window.cmdHistory.includes('acknowledge wireless'); }
+        desc: '<b>Objetivo Práctico (¿Qué estamos logrando?):</b><br>Las PCs móviles no usan cables UTP. Para conectarlas a la red de tu empresa, instalas un <b>Access Point (AP)</b>, que convierte los datos del cable de red en ondas electromagnéticas invisibles.<br><br><b>Instrucción:</b> Arrastra el <b>Access Point (WLC)</b> desde el menú lateral y móntalo en el Rack. Luego, abre la consola del Router (o el Switch) y tipea <code>acknowledge wireless</code>.',
+        theory: '<b>📘 CCNA 1.6: Wi-Fi y Access Points</b><br><br>El Wi-Fi transmite datos por el aire usando <span class="concept" data-term="rf">Radio Frecuencia (RF)</span>. Existen dos bandas de trabajo principales:<br><br>• <b>Banda 2.4 GHz:</b> Es como un sonido grave. Llega muy lejos y atraviesa paredes gruesas, pero es muy lento y se satura fácilmente. Solo existen 3 canales (carriles) que no se pisan entre sí: <b>el 1, el 6 y el 11</b>. Si dos APs cercanos usan el mismo canal, colapsan.<br><br>• <b>Banda 5 GHz:</b> Es como un sonido agudo. Es rapidísimo y tiene docenas de canales limpios sin interferencia. Su única debilidad es que si hay una pared enfrente, la señal muere casi de inmediato.<br><br><b>¿Cómo funciona el AP?</b><br>El Access Point que acabas de montar recibe la energía y los datos por un solo cable (PoE). Todo lo que tus laptops envíen por el aire (al SSID de la empresa), el AP lo convierte en pulsos eléctricos hacia el Switch.',
+        tasks: [ 
+            { id: 't1', text: 'Montar un Access Point (WLC) en el Rack', done: false },
+            { id: 't2', text: 'Comando: acknowledge wireless', done: false } 
+        ],
+        check: function() { 
+            let ap = false;
+            document.querySelectorAll('.hw-item').forEach(el => {
+                const label = el.querySelector('.hw-label') ? el.querySelector('.hw-label').innerText.toUpperCase() : '';
+                if (label.includes('ACCESS POINT') || el.getAttribute('data-type') === 'ap') ap = true;
+            });
+            if(ap) { this.tasks[0].done = true; }
+            if (window.cmdHistory && window.cmdHistory.some(c => c.includes('acknowledge wireless'))) { this.tasks[1].done = true; }
+            return this.tasks[0].done && this.tasks[1].done;
+        }
     },
 
     // ==========================================

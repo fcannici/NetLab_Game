@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if(draggedItemType === 'forti-gateway') hwLabel.innerText = 'GATEWAY';
                 else if(draggedItemType === 'laptop') hwLabel.innerText = 'LAPTOP (Admin)';
                 else if(draggedItemType === 'pdu') hwLabel.innerText = 'PDU 220V (ENERGIA)';
+                else if(draggedItemType === 'ap') hwLabel.innerText = 'ACCESS POINT (WLC)';
                 el.appendChild(hwLabel);
                 
                 generatePorts(el, draggedItemType);
@@ -254,6 +255,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (type === 'pdu') {
             for(let i=1; i<=8; i++) addPort(powerBlock, 'power', `AC${i}`);
+        } else if (type === 'ap') {
+            addPort(powerBlock, 'power', 'DC-IN');
+            addPort(rjBlock, 'rj45', 'PoE-IN');
         } else if (type === 'laptop') {
             addPort(powerBlock, 'power', 'DC-IN');
             addPort(rjBlock, 'rj45', 'NIC');
@@ -499,6 +503,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     else if(type === 'forti-switch') hwLabel.innerText = 'SWITCH';
                     else if(type === 'forti-gateway') hwLabel.innerText = 'GATEWAY';
                     else if(type === 'pdu') hwLabel.innerText = 'PDU 220V (ENERGIA)';
+                    else if(type === 'ap') hwLabel.innerText = 'ACCESS POINT (WLC)';
                     else if(type === 'laptop') hwLabel.innerText = 'LAPTOP (Admin)';
                     el.appendChild(hwLabel);
                     
