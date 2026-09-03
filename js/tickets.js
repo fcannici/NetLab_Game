@@ -110,7 +110,7 @@ const tickets = [
         id: '1.5',
         tier: 'DOMINIO 1: FUNDAMENTOS',
         title: 'Direccionamiento IPv6',
-        desc: '<b>Objetivo:</b> Asignar una IPv6 a una interfaz.<br><br><b>¿Qué hace el comando?:</b><br>1. <code>enable</code> (Entra a modo administrador).<br>2. <code>configure terminal</code> (Abre la configuración global).<br>3. <code>interface vlan 1</code> (Entra al puerto virtual principal).<br>4. <code>ipv6 address 2001:db8::1/64</code> (Asigna la IP moderna).',
+        desc: '<b>Objetivo:</b> Asignar una IPv6 a la interfaz principal del Router.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router / Gateway</b> para abrir su CLI, y tipea:<br>1. <code>enable</code> (Entra a modo administrador).<br>2. <code>configure terminal</code> (Abre la configuración global).<br>3. <code>interface vlan 1</code> (Entra al puerto virtual principal del router).<br>4. <code>ipv6 address 2001:db8::1/64</code> (Asigna la IP moderna).',
         theory: '<b>📘 CCNA 1.5: IPv6 (El futuro ilimitado)</b><br><br>Se nos acabaron las IPs de versión 4 en el mundo. Así que creamos IPv6. Son larguísimas y usan letras (Hexadecimal). Existen 4 tipos clave:<br>• <b>Global Unicast (Empiezan con 2001:):</b> Tienen pasaporte. Pueden navegar libremente por Internet.<br>• <b>Link-Local (Empiezan con fe80:):</b> IPs de supervivencia. El equipo se la inventa solo para hablar con su compañero de banco. No pueden salir de la clase.<br>• <b>Multicast (ff00:):</b> El altavoz. Lo que envías aquí lo escuchan varios equipos a la vez.<br>• <b>Anycast:</b> Magia. Muchos servidores alrededor del mundo tienen la misma IP. El Router te conectará al servidor que esté geográficamente más cerca de ti.',
         tasks: [ { id: 't1', text: 'Comando: ipv6 address 2001:db8::1/64', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ipv6 address 2001:db8::1/64'); }
@@ -132,7 +132,7 @@ const tickets = [
         id: '2.1',
         tier: 'DOMINIO 2: ACCESO A LA RED',
         title: 'VLANs y Access Ports',
-        desc: '<b>Objetivo:</b> Crear una VLAN y asignarle un puerto.<br><br><b>Comandos y qué hacen:</b><br>1. <code>enable</code> <i>(Escala tus privilegios de Usuario a Administrador).</i><br>2. <code>configure terminal</code> <i>(Entra al modo donde puedes alterar el sistema).</i><br>3. <code>vlan 10</code> <i>(Crea la VLAN 10 "el departamento" en la base de datos).</i><br>4. <code>exit</code> <i>(Sales de la edición de la VLAN).</i><br>5. <code>interface f0/1</code> <i>(Seleccionas el enchufe físico número 1).</i><br>6. <code>switchport mode access</code> <i>(Fuerzas a que este enchufe sea EXCLUSIVO para una sola PC final, no para conectar a otros switches).</i>',
+        desc: '<b>Objetivo:</b> Crear una VLAN y asignarle un puerto.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Switch</b> para abrir su CLI y ejecuta:<br>1. <code>enable</code> <i>(Escala tus privilegios de Usuario a Administrador).</i><br>2. <code>configure terminal</code> <i>(Entra al modo donde puedes alterar el sistema).</i><br>3. <code>vlan 10</code> <i>(Crea la VLAN 10 "el departamento" en la base de datos).</i><br>4. <code>exit</code> <i>(Sales de la edición de la VLAN).</i><br>5. <code>interface f0/1</code> <i>(Seleccionas el enchufe físico número 1).</i><br>6. <code>switchport mode access</code> <i>(Fuerzas a que este enchufe sea EXCLUSIVO para una sola PC final, no para conectar a otros switches).</i>',
         theory: '<b>📘 Misión 2.1: VLANs y Puertos</b><br><br>Una <span class="concept" data-term="vlan">VLAN</span> es como construir paredes de ladrillo dentro de un switch para separar a Recursos Humanos de Ventas. Un <b>Puerto de Acceso</b> es el enchufe final de la pared: le dices estrictamente al switch "<i>El cable conectado aquí pertenece SÓLO a la VLAN 10</i>". Nadie de otra VLAN podrá ver su tráfico.',
         tasks: [ { id: 't1', text: 'Comandos: vlan 10 y switchport mode access', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('vlan 10') && window.cmdHistory.includes('switchport mode access'); }
@@ -141,7 +141,7 @@ const tickets = [
         id: '2.2',
         tier: 'DOMINIO 2: ACCESO A LA RED',
         title: 'Trunking (Enlaces Troncales)',
-        desc: '<b>Objetivo:</b> Crear un Troncal para pasar múltiples VLANs.<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface f0/2</code> <i>(Selecciona el puerto que va al router).</i><br>2. <code>switchport mode trunk</code> <i>(Le dices: "Deja de ser exclusivo. Conviértete en una autopista de múltiples carriles para pasar TODAS las VLANs mezcladas").</i>',
+        desc: '<b>Objetivo:</b> Crear un Troncal para pasar múltiples VLANs.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Switch</b> para abrir su CLI y ejecuta:<br>1. <code>interface f0/2</code> <i>(Selecciona el puerto que va al router).</i><br>2. <code>switchport mode trunk</code> <i>(Le dices: "Deja de ser exclusivo. Conviértete en una autopista de múltiples carriles para pasar TODAS las VLANs mezcladas").</i>',
         theory: '<b>📘 CCNA 2.2: Trunking (El Súper Cable)</b><br><br>Un <b>Enlace Troncal</b> (<span class="concept" data-term="trunk">Trunk</span>) es una autopista de múltiples carriles donde el tráfico de todas las VLANs viaja mezclado. Para no confundirse, usa <b><span class="concept" data-term="8021q">802.1Q</span></b> (una etiqueta de color).<br>Además, los switches tienen <b><span class="concept" data-term="dtp">DTP (Dynamic Trunking Protocol)</span></b>, que intenta negociar troncales automáticamente si no los configuras manualmente.',
         tasks: [ { id: 't1', text: 'Comando: switchport mode trunk', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('switchport mode trunk'); }
@@ -159,7 +159,7 @@ const tickets = [
         id: '2.4',
         tier: 'DOMINIO 2: ACCESO A LA RED',
         title: 'EtherChannel (LACP)',
-        desc: '<b>Objetivo:</b> Agrupar enlaces físicos.<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface range f0/1 - 2</code><br>2. <code>channel-group 1 mode active</code> <i>(Agrupa estos cables usando el protocolo LACP para que funcionen como un solo súper-cable y no sean bloqueados por STP).</i>',
+        desc: '<b>Objetivo:</b> Agrupar enlaces físicos.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Switch</b> para abrir su CLI y ejecuta:<br>1. <code>interface range f0/1 - 2</code><br>2. <code>channel-group 1 mode active</code> <i>(Agrupa estos cables usando el protocolo LACP para que funcionen como un solo súper-cable y no sean bloqueados por STP).</i>',
         theory: '<b>📘 CCNA 2.4: EtherChannel (LACP)</b><br><br>Si conectas 4 cables entre dos switches para sumar velocidad, STP bloqueará 3 para evitar bucles. Usando <span class="concept" data-term="lacp">LACP (EtherChannel)</span> engañas a STP: pegas lógicamente los 4 cables con cinta adhesiva para que parezcan 1 solo enlace gigantesco.',
         tasks: [ { id: 't1', text: 'Comando: channel-group 1 mode active', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('channel-group 1 mode active'); }
@@ -190,7 +190,7 @@ const tickets = [
         id: '3.2',
         tier: 'DOMINIO 3: CONECTIVIDAD IP',
         title: 'Rutas Estáticas Flotantes',
-        desc: '<b>Objetivo:</b> Ruta Estática y Ruta por Defecto.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code> <i>(Modo configuración).</i><br>2. <code>ip route 0.0.0.0 0.0.0.0 10.1.1.1</code> <i>(Le enseña a mano: "Cualquier paquete para cualquier red desconocida [0.0.0.0], tíraselo a la IP 10.1.1.1").</i>',
+        desc: '<b>Objetivo:</b> Ruta Estática y Ruta por Defecto.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code> <i>(Modo configuración).</i><br>2. <code>ip route 0.0.0.0 0.0.0.0 10.1.1.1</code> <i>(Le enseña a mano: "Cualquier paquete para cualquier red desconocida [0.0.0.0], tíraselo a la IP 10.1.1.1").</i>',
         theory: '<b>📘 Misión 3.2: Ruta por Defecto (El Comodín)</b><br><br>Internet tiene millones de redes. El pobre Router no tiene memoria para aprendérselas todas. Así que usamos el comodín supremo <b>0.0.0.0 0.0.0.0</b>, que significa: "<i>Si no sabes a dónde va este paquete, tíraselo al Router de nuestro proveedor de Internet (10.1.1.1), que él se arregle</i>".',
         tasks: [ { id: 't1', text: 'Comando: ip route ... 50', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ip route 0.0.0.0 0.0.0.0 10.1.1.1 50'); }
@@ -199,7 +199,7 @@ const tickets = [
         id: '3.3',
         tier: 'DOMINIO 3: CONECTIVIDAD IP',
         title: 'Enrutamiento Dinámico: OSPFv2',
-        desc: '<b>Objetivo:</b> Activar el enrutamiento inteligente (OSPF).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>router ospf 1</code> <i>(Enciende el proceso del protocolo OSPF número 1. Esto hace que el router empiece a hablar automáticamente con sus vecinos para dibujar un mapa GPS de la red).</i>',
+        desc: '<b>Objetivo:</b> Activar el enrutamiento inteligente (OSPF).<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>router ospf 1</code> <i>(Enciende el proceso del protocolo OSPF número 1. Esto hace que el router empiece a hablar automáticamente con sus vecinos para dibujar un mapa GPS de la red).</i>',
         theory: '<b>📘 Misión 3.3: Enrutamiento Dinámico</b><br><br>Escribir rutas a mano es agotador. <span class="concept" data-term="ospf">OSPF</span> es un protocolo donde activas a los routers para que formen un grupo de WhatsApp y se compartan todos sus mapas. Si un cable de la ciudad se corta, el grupo se avisa en segundos y todos recalcular el mejor camino automáticamente usando un algoritmo GPS (Dijkstra).',
         tasks: [ { id: 't1', text: 'Comando: router ospf 1', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('router ospf 1'); }
@@ -208,7 +208,7 @@ const tickets = [
         id: '3.4',
         tier: 'DOMINIO 3: CONECTIVIDAD IP',
         title: 'Redundancia FHRP (HSRP)',
-        desc: '<b>Objetivo:</b> Redundancia de Puerta de Enlace (FHRP).<br><br><b>Comandos y qué hacen:</b><br>1. <code>interface f0/1</code> <i>(Entra a la interfaz local).</i><br>2. <code>standby 1 ip 192.168.1.254</code> <i>(Crea una IP "Fantasma" virtual. Si este router físico muere, otro tomará la IP 192.168.1.254 al instante sin que la red se caiga).</i>',
+        desc: '<b>Objetivo:</b> Redundancia de Puerta de Enlace (FHRP).<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>interface f0/1</code> <i>(Entra a la interfaz local).</i><br>2. <code>standby 1 ip 192.168.1.254</code> <i>(Crea una IP "Fantasma" virtual. Si este router físico muere, otro tomará la IP 192.168.1.254 al instante sin que la red se caiga).</i>',
         theory: '<b>📘 Misión 3.4: Redundancia de Puerta</b><br><br>Si las PCs de una oficina apuntan al Router A para salir a internet, y el Router A se quema, la oficina se queda sin red. FHRP (ej. HSRP) clona la mente de 2 routers físicos bajo una sola "IP Fantasma". Las PCs apuntan al fantasma, y si el router físico principal muere, el secundario asume el fantasma en 1 segundo.',
         tasks: [ { id: 't1', text: 'Comando: standby 1 ip 192.168.1.254', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('standby 1 ip 192.168.1.254'); }
@@ -221,7 +221,7 @@ const tickets = [
         id: '4.1',
         tier: 'DOMINIO 4: SERVICIOS IP',
         title: 'NAT y PAT',
-        desc: '<b>Objetivo:</b> Ocultar las IPs privadas detrás de una IP pública (NAT).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ip nat inside source list 1 interface g0/1 overload</code> <i>(Traduce TODAS las IPs de tu empresa [list 1] para que salgan a internet disfrazadas bajo la IP pública única de la salida [interface g0/1] usando puertos [overload]).</i>',
+        desc: '<b>Objetivo:</b> Ocultar las IPs privadas detrás de una IP pública (NAT).<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>ip nat inside source list 1 interface g0/1 overload</code> <i>(Traduce TODAS las IPs de tu empresa [list 1] para que salgan a internet disfrazadas bajo la IP pública única de la salida [interface g0/1] usando puertos [overload]).</i>',
         theory: '<b>📘 Misión 4.1: NAT (El truco de magia)</b><br><br>En tu casa tienes 10 dispositivos, pero tu proveedor solo te da 1 IP Pública real. <span class="concept" data-term="nat">NAT</span> (Sobrecarga) es el traductor en la puerta de tu Router. Agarra la IP privada de tu teléfono, la esconde, le pega la IP Pública de la casa, manda la petición a Google, y cuando vuelve, sabe exactamente devolverle la respuesta a tu teléfono.',
         tasks: [ { id: 't1', text: 'Comando de sobrecarga PAT', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ip nat inside source list 1 interface g0/1 overload'); }
@@ -230,7 +230,7 @@ const tickets = [
         id: '4.2',
         tier: 'DOMINIO 4: SERVICIOS IP',
         title: 'NTP (Network Time Protocol)',
-        desc: '<b>Objetivo:</b> Sincronizar el reloj atómico del Router.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ntp server 8.8.8.8</code> <i>(Le dice al equipo: "Conéctate al servidor de Google [8.8.8.8] y sincroniza tus milisegundos exactos para que los registros de errores tengan fecha real").</i>',
+        desc: '<b>Objetivo:</b> Sincronizar el reloj atómico del Router.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>ntp server 8.8.8.8</code> <i>(Le dice al equipo: "Conéctate al servidor de Google [8.8.8.8] y sincroniza tus milisegundos exactos para que los registros de errores tengan fecha real").</i>',
         theory: '<b>📘 Misión 4.2: Relojes Exactos (NTP)</b><br><br>Si hay un hackeo a las 3:15 AM, pero el Router de Ventas cree que es el año 1993, el FBI nunca resolverá el caso. NTP (Network Time Protocol) obliga a toda la escuela de routers a sincronizar sus relojes al milisegundo contra un servidor maestro (ej. Google 8.8.8.8).',
         tasks: [ { id: 't1', text: 'Comando: ntp server 8.8.8.8', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ntp server 8.8.8.8'); }
@@ -239,7 +239,7 @@ const tickets = [
         id: '4.3',
         tier: 'DOMINIO 4: SERVICIOS IP',
         title: 'Gestión: Syslog, SNMP y TFTP',
-        desc: '<b>Objetivo:</b> Centralizar el registro de errores.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>logging 192.168.1.10</code> <i>(Le dice al Router: "Si ocurre algún fallo, no lo guardes en tu memoria interna. Envíalo de inmediato al Servidor Syslog en la IP 192.168.1.10").</i>',
+        desc: '<b>Objetivo:</b> Centralizar el registro de errores.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>logging 192.168.1.10</code> <i>(Le dice al Router: "Si ocurre algún fallo, no lo guardes en tu memoria interna. Envíalo de inmediato al Servidor Syslog en la IP 192.168.1.10").</i>',
         theory: '<b>📘 CCNA 4.3: Monitorización y Gestión</b><br><br>• <b><span class="concept" data-term="syslog">Syslog:</span></b> Envía un reporte de texto al servidor central cada vez que hay un fallo.<br>• <b><span class="concept" data-term="snmp">SNMP:</span></b> Protocolo para monitorear el estado del equipo en tiempo real (ej. % de CPU, uso del cable).<br>• <b><span class="concept" data-term="tftp">TFTP/FTP/SCP:</span></b> Protocolos usados para hacer backups de la configuración del Router hacia un servidor externo.',
         tasks: [ { id: 't1', text: 'Comando: logging 192.168.1.10', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('logging 192.168.1.10'); }
@@ -270,7 +270,7 @@ const tickets = [
         id: '5.2',
         tier: 'DOMINIO 5: SEGURIDAD',
         title: 'Modelo de Acceso (AAA)',
-        desc: '<b>Objetivo:</b> Autenticación externa (Radius/Tacacs).<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>aaa new-model</code> <i>(Enciende el modelo de seguridad Avanzada. El router ya no validará las contraseñas localmente, sino que le preguntará a un Servidor de Seguridad central si el empleado tiene acceso).</i>',
+        desc: '<b>Objetivo:</b> Autenticación externa (Radius/Tacacs).<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>aaa new-model</code> <i>(Enciende el modelo de seguridad Avanzada. El router ya no validará las contraseñas localmente, sino que le preguntará a un Servidor de Seguridad central si el empleado tiene acceso).</i>',
         theory: '<b>📘 Misión 5.2: Autenticación (AAA)</b><br><br>Si tienes 500 routers, crear cuentas de usuario en cada uno para los ingenieros toma semanas. <b>AAA</b> hace que el router no guarde las contraseñas. Cuando intentas entrar, el router "llama por teléfono" a un Servidor de Seguridad Central (RADIUS o TACACS) y le pregunta: <i>"¿El ingeniero Juan tiene permiso de apagar mis puertos?"</i>.',
         tasks: [ { id: 't1', text: 'Comando: aaa new-model', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('aaa new-model'); }
@@ -279,7 +279,7 @@ const tickets = [
         id: '5.3',
         tier: 'DOMINIO 5: SEGURIDAD',
         title: 'Listas de Control de Acceso (ACL)',
-        desc: '<b>Objetivo:</b> Poner un Patovica/Guardia a filtrar IPs.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>access-list 10 deny 192.168.1.50</code> <i>(Le das la orden al guardia número 10: "Bloquea absolutamente todo el tráfico que venga desde la PC sospechosa 192.168.1.50").</i>',
+        desc: '<b>Objetivo:</b> Poner un Patovica/Guardia a filtrar IPs.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Router</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>access-list 10 deny 192.168.1.50</code> <i>(Le das la orden al guardia número 10: "Bloquea absolutamente todo el tráfico que venga desde la PC sospechosa 192.168.1.50").</i>',
         theory: '<b>📘 Misión 5.3: El Patovica (ACL)</b><br><br>Una <span class="concept" data-term="acl">ACL</span> es la lista de invitados del club. Puedes decirle al Router: <i>"Deja pasar a todos, excepto a la IP de ese alumno rebelde"</i> (ACL Estándar). O mejor aún: <i>"Deja pasar al alumno a la web, pero prohíbele que acceda al servidor FTP a descargar películas"</i> (ACL Extendida).',
         tasks: [ { id: 't1', text: 'Comando: access-list 10 deny ...', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('access-list 10 deny 192.168.1.50'); }
@@ -288,7 +288,7 @@ const tickets = [
         id: '5.4',
         tier: 'DOMINIO 5: SEGURIDAD',
         title: 'Seguridad Capa 2: Port Security y DAI',
-        desc: '<b>Objetivo:</b> Bloquear suplantación de identidad interna.<br><br><b>Comandos y qué hacen:</b><br>1. <code>configure terminal</code><br>2. <code>ip arp inspection vlan 10</code> <i>(Protege el departamento 10. Si un empleado hacker intenta decir "¡Oigan, envíenme sus contraseñas, yo soy el Router!", el Switch interceptará su mentira ARP y la bloqueará).</i>',
+        desc: '<b>Objetivo:</b> Bloquear suplantación de identidad interna.<br><br><b>Instrucción:</b> Haz doble clic en el <b>Switch</b> para abrir su CLI y ejecuta:<br>1. <code>configure terminal</code><br>2. <code>ip arp inspection vlan 10</code> <i>(Protege el departamento 10. Si un empleado hacker intenta decir "¡Oigan, envíenme sus contraseñas, yo soy el Router!", el Switch interceptará su mentira ARP y la bloqueará).</i>',
         theory: '<b>📘 CCNA 5.4: Amenazas Internas en Capa 2</b><br><br>Los ataques más comunes desde adentro:<br>• <b><span class="concept" data-term="port_sec">Port Security:</span></b> Apaga el puerto si se conecta una Dirección MAC desconocida.<br>• <b><span class="concept" data-term="snooping">DHCP Snooping:</span></b> Evita que un hacker conecte un servidor DHCP falso para robar tráfico.<br>• <b><span class="concept" data-term="dai">Dynamic ARP Inspection (DAI):</span></b> Bloquea la suplantación de identidad ARP (Man-In-The-Middle).',
         tasks: [ { id: 't1', text: 'Comando: ip arp inspection vlan 10', done: false } ],
         check: function() { return window.cmdHistory && window.cmdHistory.includes('ip arp inspection vlan 10'); }

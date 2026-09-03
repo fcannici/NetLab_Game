@@ -111,9 +111,17 @@ Content-Type: application/json
                 baseName = newName.toUpperCase();
                 cliPrompt.innerText = baseName + '(config)#';
             } else if (cmd.startsWith('vlan ')) {
+                if (baseName.includes('FIREWALL')) {
+                    cliOutput.innerHTML += `% Los Firewalls no manejan las VLANs locales de esta forma. Usa el Switch.\n`;
+                    return;
+                }
                 cliMode = 'config-vlan';
                 cliPrompt.innerText = baseName + '(config-vlan)#';
             } else if (cmd.startsWith('interface ') || cmd.startsWith('int ')) {
+                if (baseName.includes('FIREWALL')) {
+                    cliOutput.innerHTML += `% Este comando no debe ejecutarse en el Firewall. Usa el Router o el Switch para las prácticas CCNA.\n`;
+                    return;
+                }
                 cliMode = 'config-if';
                 cliPrompt.innerText = baseName + '(config-if)#';
             } else if (cmd.startsWith('router ospf ')) {
