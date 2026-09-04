@@ -91,9 +91,31 @@ Content-Type: application/json
             } else if (cmd === 'show vlan' || cmd === 'sh vlan') {
                 cliOutput.innerHTML += `VLAN Name                             Status    Ports\n---- -------------------------------- --------- -------------------------------\n1    default                          active    Fa0/1, Fa0/2\n10   VENTAS                           active    Fa0/3\n`;
             } else if (cmd === 'show running-config' || cmd === 'sh run') {
-                cliOutput.innerHTML += `Building configuration...\n\nCurrent configuration : 1243 bytes\n!\nversion 15.0\nhostname ${baseName}\n!\nenable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0\n!\ninterface FastEthernet0/1\n switchport access vlan 10\n switchport mode access\n!\ninterface Vlan10\n ip address 192.168.10.1 255.255.255.0\n!\nline con 0\n password 7 0822455D0A16\n login\n!\nend\n`;
+                cliOutput.innerHTML += `Building configuration...\n\nCurrent configuration : 1243 bytes\n!\nversion 15.0\nhostname ${baseName}\n!\nenable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0\nservice password-encryption\n!\nip domain-name lab.local\nip ssh version 2\n!\ninterface FastEthernet0/1\n switchport access vlan 10\n switchport mode access\n!\ninterface Vlan10\n ip address 192.168.10.1 255.255.255.0\n!\nline con 0\n password 7 0822455D0A16\n login\n!\nbanner motd ^C ACCESO SOLO PERSONAL AUTORIZADO ^C\n!\nend\n`;
+            } else if (cmd === 'show version' || cmd === 'sh ver') {
+                cliOutput.innerHTML += `Cisco IOS Software, C2960 Software (C2960-LANBASEK9-M), Version 15.0(2)SE4\nTechnical Support: http://www.cisco.com/techsupport\nROM: Bootstrap program is C2960 boot loader\nSystem image file is "flash:c2960-lanbasek9-mz.150-2.SE4.bin"\nModel number: WS-C2960-24TT-L\nSystem serial number: FOC12345678\nConfiguration register is 0xF\n`;
+            } else if (cmd.startsWith('show interfaces') || cmd.startsWith('sh int')) {
+                cliOutput.innerHTML += `FastEthernet0/1 is up, line protocol is up (connected)\n  Hardware is Fast Ethernet, address is 0019.e86b.7a01 (bia 0019.e86b.7a01)\n  MTU 1500 bytes, BW 100000 Kbit/sec, DLY 100 usec,\n     reliability 255/255, txload 1/255, rxload 1/255\n  Encapsulation ARPA, loopback not set\n  Keepalive set (10 sec)\n  Full-duplex, 100Mb/s, media type is 100BaseTX\n  0 input errors, 0 CRC, 0 frame, 0 overrun\n`;
+            } else if (cmd.startsWith('show cdp') || cmd.startsWith('sh cdp') || cmd.startsWith('show lldp') || cmd.startsWith('sh lldp')) {
+                cliOutput.innerHTML += `Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge\n                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone\n\nDevice ID        Local Intrfce     Holdtme    Capability  Platform  Port ID\nRouter-NEXUS     Fas 0/2           145              R     C1941     Gig 0/1\nCatalyst-Core    Fas 0/24          160              S     WS-C2960  Fas 0/1\n`;
+            } else if (cmd.startsWith('ping ')) {
+                const target = cmd.split(' ')[1] || '8.8.8.8';
+                cliOutput.innerHTML += `Type escape sequence to abort.\nSending 5, 100-byte ICMP Echos to ${target}, timeout is 2 seconds:\n!!!!!\nSuccess rate is 100 percent (5/5), round-trip min/avg/max = 1/2/4 ms\n`;
+            } else if (cmd.startsWith('traceroute ') || cmd.startsWith('trace ')) {
+                const target = cmd.split(' ')[1] || '8.8.8.8';
+                cliOutput.innerHTML += `Type escape sequence to abort.\nTracing the route to ${target}\n\n  1 192.168.1.1 1 msec 1 msec 1 msec\n  2 10.1.1.1 2 msec 2 msec 3 msec\n  3 ${target} 4 msec 4 msec 5 msec\n`;
             } else if (cmd === 'show ip interface brief' || cmd === 'sh ip int br') {
                 cliOutput.innerHTML += `Interface              IP-Address      OK? Method Status                Protocol\nFastEthernet0/1        unassigned      YES unset  up                    up\nFastEthernet0/2        unassigned      YES unset  up                    up\nVlan1                  unassigned      YES unset  administratively down down\nVlan10                 192.168.10.1    YES manual up                    up\n`;
+            } else if (cmd.startsWith('show mac address-table') || cmd.startsWith('sh mac')) {
+                cliOutput.innerHTML += `          Mac Address Table\n-------------------------------------------\nVlan    Mac Address       Type        Ports\n----    -----------       --------    -----\n   1    0014.2234.5678    DYNAMIC     Fa0/1\n  10    0050.7966.6800    DYNAMIC     Fa0/2\nTotal Mac Addresses for this criterion: 2\n`;
+            } else if (cmd.startsWith('show hosts') || cmd.startsWith('sh hosts')) {
+                cliOutput.innerHTML += `Default domain is lab.local\nName/address lookup uses domain service\nName servers are 8.8.8.8, 192.168.1.1\n\nHost                      Port  Flags      Age Type   Address(es)\nserver1.lab.local         None  (temp, OK)  0   IP    192.168.10.50\nrouter.lab.local          None  (temp, OK)  0   IP    192.168.1.1\n`;
+            } else if (cmd.startsWith('show ssh') || cmd.startsWith('sh ssh')) {
+                cliOutput.innerHTML += `Connection Version Mode Encryption  Hmac         State                 Username\n0          2.0     IN   aes256-cbc  hmac-sha1    Session [Session SSH] admin\n%No Unencrypted connections\n`;
+            } else if (cmd.startsWith('copy run tftp') || cmd.startsWith('copy running-config tftp')) {
+                cliOutput.innerHTML += `Address or name of remote host []? 192.168.1.10\nDestination filename [running-config]? \n!!\n[OK - 1243 bytes]\n1243 bytes copied in 0.052 secs (23903 bytes/sec)\n`;
+            } else if (cmd.startsWith('copy run ftp') || cmd.startsWith('copy running-config ftp')) {
+                cliOutput.innerHTML += `Address or name of remote host []? 192.168.1.10\nDestination filename [running-config]? \nWriting running-config...\n[OK - 1243 bytes]\n`;
             } else if (cmd === 'copy running-config startup-config' || cmd === 'write' || cmd === 'wr') {
                 cliOutput.innerHTML += `Destination filename [startup-config]? \nBuilding configuration...\n[OK]\n`;
             } else if (cmd === 'show ip route' || cmd === 'sh ip ro') {
@@ -135,8 +157,11 @@ Content-Type: application/json
                 cliPrompt.innerText = baseName + '(config-line)#';
             } else if (cmd.startsWith('acknowledge ')) {
                 cliOutput.innerHTML += `[OK] Concepto teórico asimilado en la base de datos neuronal.\n`;
-            } else if (cmd.startsWith('enable secret ') || cmd.startsWith('access-list ') || cmd.startsWith('ip nat ') || cmd.startsWith('ip route ') || cmd.startsWith('ntp server ') || cmd.startsWith('ip dhcp snooping') || cmd.startsWith('aaa new-model') || cmd.startsWith('logging ') || cmd.startsWith('ip arp inspection ')) {
-                // silencioso
+            } else if (cmd.startsWith('enable secret ') || cmd.startsWith('service password-encryption') || cmd.startsWith('ip domain-name ') || cmd.startsWith('crypto key ') || cmd.startsWith('ip ssh ') || cmd.startsWith('ipv6 route ') || cmd.startsWith('banner motd ') || cmd.startsWith('access-list ') || cmd.startsWith('ip nat ') || cmd.startsWith('ip route ') || cmd.startsWith('ntp server ') || cmd.startsWith('ip dhcp snooping') || cmd.startsWith('aaa new-model') || cmd.startsWith('logging ') || cmd.startsWith('ip arp inspection ')) {
+                if (cmd.startsWith('crypto key generate rsa')) {
+                    cliOutput.innerHTML += `The name for the keys will be: ${baseName}.lab.local\nChoose the size of the key modulus in the range of 360 to 4096 for your\nGeneral Purpose Keys. Providing a key modulus greater than 512 may take\na few minutes.\n\nHow many bits in the modulus [512]: 1024\n% Generating 1024 bit RSA keys, keys will be non-exportable...\n[OK] (rsa key generated)\n`;
+                }
+                // silencioso para el resto
             } else if (cmd.startsWith('curl ') || cmd.startsWith('curl -x get ')) {
             cliOutput.innerHTML += `HTTP/1.1 200 OK
 Content-Type: application/json
@@ -446,6 +471,15 @@ Traza completa.
 Traza completa.
 `;
             }
+        } else if (cmd.startsWith('nslookup ')) {
+            const host = cmd.split(' ')[1] || 'cisco.com';
+            cliOutput.innerHTML += `Servidor:  dns.google\nAddress:  8.8.8.8\n\nRespuesta no autoritativa:\nNombre:  ${host}\nAddresses:  198.51.100.1\n          2001:db8::80\n\n`;
+        } else if (cmd.startsWith('ftp ')) {
+            const host = cmd.split(' ')[1] || '192.168.1.10';
+            cliOutput.innerHTML += `Conectado a ${host}.\n220 Cisco FTP Server (Version 1.1) ready.\nUsuario (${host}:(none)): admin\n331 Password required for admin.\nContraseña: \n230 User admin logged in.\nftp> quit\n221 Goodbye.\n`;
+        } else if (cmd.startsWith('ssh ')) {
+            const target = cmd.split(' ')[1] || '192.168.1.1';
+            cliOutput.innerHTML += `Connecting to ${target} on port 22...\nPassword: \n\nCisco IOS Software, Catalyst 2960 Series\nSwitch# \n`;
         } else if (cmd === 'arp -a') {
             if (window.pingSuccess) {
                 cliOutput.innerHTML += `Interfaz: 192.168.1.100 --- 0x12

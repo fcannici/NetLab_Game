@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>N.E.X.U.S. Net-Lab: Fortinet Edition</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=1788537765">
 </head>
 <body>
 
@@ -17,18 +17,80 @@
     </div>
 
 
-    <!-- N.E.X.U.S. HELPDESK TICKETS -->
+    <!-- N.E.X.U.S. HELPDESK HUD COMPACTO -->
     <div id="ticket-panel">
         <div class="ticket-header">
-            <span>[+] N.E.X.U.S. HELPDESK</span><button id="debug-prev-btn" style="margin-left: 10px; background: #333; color: #fff; border: 1px solid #555; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Volver a la misión anterior">⏮ PREV</button><button id="debug-autorack-btn" style="margin-left: 10px; background: #0078D7; color: #fff; border: 1px solid #005a9e; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Auto-armar rack completo (Ahorra tiempo)">⚡ AUTO-RACK</button><button id="debug-skip-btn" style="margin-left: 10px; background: #333; color: #ffeb3b; border: 1px solid #555; padding: 2px 5px; cursor: pointer; font-size: 10px; font-weight: bold;" title="Saltear misión actual (Debug)">⏭ SKIP</button>
+            <span>[+] N.E.X.U.S. NOC</span>
+            <div class="hud-controls">
+                <button id="debug-prev-btn" class="hud-btn" title="Volver a la misión anterior">⏮ PREV</button>
+                <button id="debug-autorack-btn" class="hud-btn auto-btn" title="Auto-armar rack completo (Ahorra tiempo)">⚡ AUTO-RACK</button>
+                <button id="debug-skip-btn" class="hud-btn skip-btn" title="Saltear misión actual (Debug)">⏭ SKIP</button>
+            </div>
             <span id="ticket-status" class="status-badge">ACTIVO</span>
         </div>
-        <div class="ticket-body">
-            <div id="ticket-tier" style="color:#0078D7; font-size: 0.75rem; margin-bottom: 5px; font-weight: bold; text-transform: uppercase;"></div>
-            <h3 id="ticket-title">Iniciando NOC...</h3>
-            <p id="ticket-desc">Cargando base de datos de contratos...</p>
-            <div class="ticket-progress">
+        <div class="ticket-body-compact">
+            <div class="hud-ticket-row">
+                <span id="ticket-tier" class="hud-tier-text">CCNA</span>
+                <span id="ticket-title" class="hud-title-text">Iniciando NOC...</span>
+            </div>
+            <div class="hud-actions-row">
+                <button id="btn-open-ticket" class="action-btn ticket-btn" title="Ver detalles, objetivos e instrucciones del ticket">📋 VER TICKET</button>
+                <button id="btn-open-knowledge" class="action-btn knowledge-btn" title="Ver teoría y base de conocimiento técnico">📘 BASE CONOCIMIENTO</button>
+            </div>
+            <div class="ticket-progress-compact">
                 <ul id="ticket-tasks"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAY: TICKET REAL DEL NOC -->
+    <div id="ticket-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header ticket-theme">
+                <div class="modal-title-box">
+                    <span class="modal-badge">TICKET OFICIAL NOC</span>
+                    <h2 id="modal-ticket-id-title">Ticket 1.1: Inspección</h2>
+                </div>
+                <button id="ticket-modal-close" class="modal-close-btn" title="Cerrar ticket (Esc)">✕ CERRAR</button>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-meta-bar">
+                    <div><b>DOMINIO:</b> <span id="modal-ticket-tier">CCNA 200-301</span></div>
+                    <div><b>ESTADO:</b> <span id="modal-ticket-status" class="status-badge">EN PROGRESO</span></div>
+                </div>
+                <div id="modal-ticket-desc" class="modal-scroll-content">
+                    <!-- Contenido del ticket -->
+                </div>
+                <div class="modal-tasks-section">
+                    <h4>CHECKLIST OPERATIVO:</h4>
+                    <ul id="modal-ticket-tasks" class="modal-tasks-list"></ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-hint">Presione ESC o haga clic fuera para volver a la consola y rack</span>
+                <button id="ticket-modal-ack" class="modal-action-btn">ENTENDIDO / PROCEDER</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL OVERLAY: BASE DE CONOCIMIENTO TÉCNICO -->
+    <div id="knowledge-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-window knowledge-theme">
+            <div class="modal-header knowledge-theme">
+                <div class="modal-title-box">
+                    <span class="modal-badge knowledge-badge">N.E.X.U.S. KNOWLEDGE BASE</span>
+                    <h2 id="modal-kb-title">📘 Arquitectura y Fundamentos</h2>
+                </div>
+                <button id="knowledge-modal-close" class="modal-close-btn" title="Cerrar base de conocimiento (Esc)">✕ CERRAR</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-kb-content" class="modal-scroll-content">
+                    <!-- Contenido teórico profundo -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="modal-hint">Documentación técnica oficial Cisco CCNA 200-301</span>
+                <button id="knowledge-modal-ack" class="modal-action-btn kb-ack">VOLVER AL RACK</button>
             </div>
         </div>
     </div>
@@ -89,8 +151,8 @@
         </div>
     </div>
     
-    <script src="js/game.js?v=1788458890"></script>
-    <script src="js/tickets.js?v=1788458890"></script>
-    <script src="js/cli.js?v=1788458890"></script>
+    <script src="js/game.js?v=1788537765"></script>
+    <script src="js/tickets.js?v=1788537765"></script>
+    <script src="js/cli.js?v=1788537765"></script>
 </body>
 </html>

@@ -1,0 +1,7 @@
+*.bak
+*.pyc
+__pycache__/
+*.tmp
+validate.js
+test.js
+*.py
